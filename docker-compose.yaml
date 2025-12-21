@@ -1,0 +1,12 @@
+services:
+  thrico-entity-login:
+    container_name: thrico-entity-login
+    image: thrico-entity-login:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # assuming your app runs on port 3000 inside the container
+    environment:
+      - NODE_ENV=production
+  
+

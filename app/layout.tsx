@@ -1,0 +1,120 @@
+import {
+  Space_Grotesk,
+  Inter,
+  Playfair_Display,
+  Outfit,
+} from "next/font/google";
+import "./globals.css";
+
+import type { Metadata } from "next";
+import { ApolloWrapper } from "@/components/hoc/apollo-wrapper";
+import { Toaster } from "sonner";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+});
+
+export const metadata: Metadata = {
+  title: {
+    default: "Thrico Entity Dashboard",
+    template: "%s | Thrico",
+  },
+  description:
+    "Manage your community, members, and content with Thrico's powerful entity dashboard. Build engaging websites, forums, and member experiences.",
+  keywords: [
+    "community management",
+    "entity dashboard",
+    "member management",
+    "website builder",
+    "thrico",
+  ],
+  authors: [{ name: "Thrico" }],
+  creator: "Thrico",
+  publisher: "Thrico",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://admin.thrico.app"
+  ),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    title: "Thrico Entity Dashboard",
+    description:
+      "Manage your community, members, and content with Thrico's powerful entity dashboard.",
+    siteName: "Thrico",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Thrico Entity Dashboard",
+    description:
+      "Manage your community, members, and content with Thrico's powerful entity dashboard.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: [
+      {
+        url: "/icon-light-32x32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: "/apple-icon.png",
+  },
+  themeColor: "#0f172a",
+  category: "technology",
+  applicationName: "Thrico Entity Dashboard",
+  referrer: "strict-origin-when-cross-origin",
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/en-US",
+      "en-GB": "/en-GB",
+    },
+  },
+  manifest: "/manifest.json",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${spaceGrotesk.className} ${inter.variable} ${playfair.variable} ${outfit.variable} font-sans`}
+      >
+        <ApolloWrapper host={"https://admin.thrico.app/graphql"}>
+          {children}
+        </ApolloWrapper>
+        <Toaster position="top-center" richColors />
+      </body>
+    </html>
+  );
+}
