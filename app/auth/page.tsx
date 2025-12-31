@@ -15,20 +15,16 @@ const Auth = () => {
   }));
   const path = searchParams.get("path");
   const host = searchParams.get("host");
-  const router = useRouter();
-
-  const [search, { data }] = useCheckUser();
 
   React.useEffect(() => {
     if (token !== null) {
-      search();
-      router.push(`${host}/auth/callback?code=${token}&path=${path}`);
+      window.location.href = `/login/?path=${path}&&host=${host}`;
     } else {
       window.location.href = `/login/?path=${path}&&host=${host}`;
     }
   }, [token, path]);
 
-  return null
+  return null;
 };
 
 export default Auth;
