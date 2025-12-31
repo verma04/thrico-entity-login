@@ -26,12 +26,12 @@ export function ApolloWrapper({ children, host }: ApolloWrapperProps) {
     const errorControl = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors) {
         graphQLErrors.forEach(({ message }) => {
-          toast.error(message, { id: "apollo-error" });
+          toast.error(graphQLErrors[0]?.message, { id: "apollo-error" });
         });
       }
-      if (networkError) {
-        toast.error(`Network error: ${networkError}`);
-      }
+      // if (networkError) {
+      //   toast.error(`Network error: ${networkError}`);
+      // }
     });
 
     const httpLink = new HttpLink({

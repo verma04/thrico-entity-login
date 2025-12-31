@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const REGISTER = gql`
-  mutation RegisterAsAdmin($input: registerInput) {
+  mutation RegisterAsAdmin($input: AdminRegisterInput) {
     registerAsAdmin(input: $input) {
       success
     }
@@ -9,7 +9,7 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
-  mutation LoginAsAdmin($input: loginInput) {
+  mutation LoginAsAdmin($input: AdminLoginInput) {
     loginAsAdmin(input: $input) {
       id
       status
@@ -18,7 +18,7 @@ export const LOGIN = gql`
 `;
 
 export const VERIFY_OTP = gql`
-  mutation OtpLogin($input: otpInput) {
+  mutation OtpLogin($input: AdminOtpInput) {
     otpLogin(input: $input) {
       token
     }
@@ -50,4 +50,3 @@ export const LOGOUT = gql`
     }
   }
 `;
-

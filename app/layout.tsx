@@ -8,7 +8,6 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import { ApolloWrapper } from "@/components/hoc/apollo-wrapper";
-import { Toaster } from "sonner";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -113,7 +112,6 @@ export default function RootLayout({
         <ApolloWrapper host={"https://admin.thrico.app/graphql"}>
           {children}
         </ApolloWrapper>
-        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

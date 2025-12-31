@@ -1,6 +1,7 @@
+"use client";
 import Link from "next/link";
 import React from "react";
-
+import { Toaster, toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -8,10 +9,18 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import ThricoLogo from "../logo";
-import { Users, Globe, BarChart3, Sparkles, CheckCircle2 } from "lucide-react";
+import {
+  Users,
+  Globe,
+  BarChart3,
+  Sparkles,
+  CheckCircle2,
+  Smartphone,
+} from "lucide-react";
 
 const AuthLayout = ({ children }: React.PropsWithChildren) => (
   <div className="min-h-screen w-full flex bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <Toaster position="top-center" richColors />
     {/* Left Side - Branding & Features */}
     <div className="flex w-1/2 relative overflow-hidden p-12 flex-col justify-between">
       {/* Animated background gradient */}
@@ -38,8 +47,9 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
           </h1>
 
           <p className="text-lg text-blue-100/90 max-w-md leading-relaxed animate-in fade-in slide-in-from-left-8 duration-700 delay-300">
-            Everything you need to create engaging experiences, manage members,
-            and scale your community to new heights.
+            Build thriving communities by creating engaging experiences,
+            managing members effortlessly, and scaling your community to new
+            heights.
           </p>
         </div>
       </div>
@@ -53,7 +63,7 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-white mb-1 group-hover:text-blue-200 transition-colors">
-                Member Management
+                Community Management
               </h3>
               <p className="text-sm text-blue-100/80">
                 Powerful tools to engage and grow your community
@@ -91,6 +101,21 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
             </div>
             <CheckCircle2 className="h-5 w-5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
+
+          <div className="flex items-start gap-4 group cursor-pointer">
+            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-white/20">
+              <Smartphone className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white mb-1 group-hover:text-blue-200 transition-colors">
+                Brand Mobile & Custom Domain
+              </h3>
+              <p className="text-sm text-blue-100/80">
+                Launch your own white-label mobile apps and site
+              </p>
+            </div>
+            <CheckCircle2 className="h-5 w-5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
         </div>
 
         {/* Categories and Features Display */}
@@ -98,9 +123,15 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
           {/* Entity Categories - Static Grid */}
           <div>
             <p className="text-xs text-blue-300/70 mb-3 text-center font-medium uppercase tracking-wider">
-              Supporting Communities
+              Your Community. One Platform. Any Scale.
             </p>
             <div className="flex flex-wrap justify-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
+                🚀 Startup
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-blue-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
+                🤝 Association
+              </span>
               <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
                 🎓 Academia
               </span>
@@ -110,19 +141,13 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
               <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
                 ✨ Creator
               </span>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-blue-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                🤝 Association
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                🚀 Startup
-              </span>
             </div>
           </div>
 
           {/* Feature Modules - Organized by Category */}
           <div className="border-t border-white/10 pt-6 space-y-4">
             <p className="text-xs text-purple-300/70 mb-4 text-center font-medium uppercase tracking-wider">
-              Powerful Features
+              Your All-in-One Community Management Platform
             </p>
 
             {/* Marquee Container */}

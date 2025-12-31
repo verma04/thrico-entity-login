@@ -73,7 +73,9 @@ const SignupForm = () => {
         <Form className="w-full">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
               <Field
                 as={Input}
                 id="email"
@@ -95,7 +97,9 @@ const SignupForm = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
+                <Label htmlFor="firstName" className="text-sm font-medium">
+                  First Name
+                </Label>
                 <Field
                   as={Input}
                   id="firstName"
@@ -115,7 +119,9 @@ const SignupForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
+                <Label htmlFor="lastName" className="text-sm font-medium">
+                  Last Name
+                </Label>
                 <Field
                   as={Input}
                   id="lastName"
@@ -137,7 +143,9 @@ const SignupForm = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
                 <div className="relative group">
                   <Field
                     as={Input}
@@ -171,7 +179,9 @@ const SignupForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirm" className="text-sm font-medium">Confirm Password</Label>
+                <Label htmlFor="confirm" className="text-sm font-medium">
+                  Confirm Password
+                </Label>
                 <div className="relative group">
                   <Field
                     as={Input}
