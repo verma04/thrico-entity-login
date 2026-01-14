@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 
 const AuthLayout = ({ children }: React.PropsWithChildren) => (
-  <div className="min-h-screen w-full flex bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+  <div className="min-h-screen w-full flex flex-col lg:flex-row bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950">
     <Toaster position="top-center" richColors />
     {/* Left Side - Branding & Features */}
-    <div className="flex w-1/2 relative overflow-hidden p-12 flex-col justify-between">
+    <div className="hidden lg:flex w-full lg:w-1/2 relative overflow-hidden p-12 flex-col justify-between">
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700" />
 
@@ -46,11 +46,11 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
             </span>
           </h1>
 
-          <p className="text-lg text-blue-100/90 max-w-md leading-relaxed animate-in fade-in slide-in-from-left-8 duration-700 delay-300">
+          {/* <p className="text-lg text-blue-100/90 max-w-md leading-relaxed animate-in fade-in slide-in-from-left-8 duration-700 delay-300">
             Build thriving communities by creating engaging experiences,
             managing members effortlessly, and scaling your community to new
             heights.
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -477,18 +477,22 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
     </div>
 
     {/* Right Side - Auth Form */}
-    <div className="flex w-1/2 items-center justify-center p-6 lg:p-12 relative">
-      {/* Decorative gradient orbs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl -z-10 lg:hidden" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-indigo-400/10 to-blue-400/10 rounded-full blur-3xl -z-10" />
+    <div className="flex w-full lg:w-1/2 items-center justify-center p-6 lg:p-12 relative overflow-hidden">
+      {/* Decorative gradient orbs for mobile/right side */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-cyan-400/20 rounded-full blur-3xl -z-10" />
+      <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-purple-400/10 rounded-full blur-3xl -z-10 animate-pulse delay-700" />
 
-      <div className="w-full max-w-md">
-        <Card className="border border-slate-200/50 dark:border-slate-700/50 shadow-2xl bg-white dark:bg-slate-900 backdrop-blur-xl animate-in fade-in slide-in-from-right-8 duration-700 overflow-hidden">
+      {/* Subtle grid pattern for texture */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10">
+        <Card className="border border-slate-200/50 dark:border-slate-700/50 shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl animate-in fade-in slide-in-from-right-8 duration-700 overflow-hidden ring-1 ring-white/50 dark:ring-slate-700/50">
           {/* Card Header with gradient border */}
           <CardHeader className="relative pb-6 pt-8 px-8">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
             <div className="flex justify-center">
-              <div className="transform hover:scale-105 transition-transform duration-300">
+              <div className="transform hover:scale-105 transition-transform duration-300 drop-shadow-lg">
                 <ThricoLogo />
               </div>
             </div>
@@ -498,13 +502,13 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
           <CardContent className="px-8 pb-8">{children}</CardContent>
 
           {/* Footer */}
-          <CardFooter className="flex-col gap-4 border-t border-slate-100 dark:border-slate-800 pt-6 pb-8 px-8 bg-slate-50/50 dark:bg-slate-900/50">
+          <CardFooter className="flex-col gap-4 border-t border-slate-100 dark:border-slate-800 pt-6 pb-8 px-8 bg-slate-50/30 dark:bg-slate-900/30 backdrop-blur-sm">
             {/* Footer Links */}
             <div className="flex items-center justify-center gap-6">
               <Link
                 target="_blank"
                 href="https://thrico.com/privacy-policy/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group font-medium"
               >
                 Help
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
@@ -513,7 +517,7 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
               <Link
                 target="_blank"
                 href="https://thrico.com/privacy-policy/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group font-medium"
               >
                 Privacy
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
@@ -522,7 +526,7 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
               <Link
                 target="_blank"
                 href="https://thrico.com/privacy-policy/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group font-medium"
               >
                 Terms
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
@@ -532,19 +536,22 @@ const AuthLayout = ({ children }: React.PropsWithChildren) => (
             {/* Trust badges */}
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  <span className="text-green-500">🔒</span>
-                  SSL Secured
+                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/5 dark:bg-green-500/10 border border-green-500/10">
+                  <span className="text-green-500 text-[10px]">🔒</span>
+                  <span className="font-medium text-green-700 dark:text-green-400">
+                    SSL Secured
+                  </span>
                 </span>
-                <span className="text-slate-300 dark:text-slate-700">•</span>
-                <span className="inline-flex items-center gap-1">
-                  <span className="text-blue-500">⚡</span>
-                  Fast & Reliable
+                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10">
+                  <span className="text-blue-500 text-[10px]">⚡</span>
+                  <span className="font-medium text-blue-700 dark:text-blue-400">
+                    Fast & Reliable
+                  </span>
                 </span>
               </div>
-              <p className="text-[10px] text-muted-foreground/70">
+              {/* <p className="text-[10px] text-muted-foreground/70 tracking-wide pt-1">
                 Trusted by 10,000+ communities worldwide
-              </p>
+              </p> */}
             </div>
           </CardFooter>
         </Card>
