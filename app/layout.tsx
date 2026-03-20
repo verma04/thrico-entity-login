@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   creator: "Thrico",
   publisher: "Thrico",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "https://admin.thrico.app"
+    process.env.NEXT_PUBLIC_BASE_URL || "https://admin.thrico.app",
   ),
   openGraph: {
     type: "website",

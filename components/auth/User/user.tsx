@@ -12,14 +12,14 @@ import { useRouter } from "next/navigation";
 const User = () => {
   const router = useRouter();
 
-  const removeToken = useTokenStore((state) => state.removeToken);
-  const { data, error } = useGetUser();
-  const { data: profile, loading } = useUserProfile();
+  // const removeToken = useTokenStore((state) => state.removeToken);
+  // const { data, error } = useGetUser();
+  // const { data: profile, loading } = useUserProfile();
 
-  if (error) {
-    removeToken();
-    router.push("/login");
-  }
+  // if (error) {
+  //   removeToken();
+  //   router.push("/login");
+  // }
 
   return (
     <>
@@ -27,7 +27,7 @@ const User = () => {
         <div className="flex justify-center items-center w-full">
           <div className="flex flex-col w-[95%]">
             <div className="flex flex-col">
-              <h2 className="text-2xl font-semibold mb-4">
+              {/* <h2 className="text-2xl font-semibold mb-4">
                 Welcome, {profile?.userProfile?.firstName}
               </h2>
               <div className="flex justify-center w-full mt-4">
@@ -38,7 +38,7 @@ const User = () => {
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                   </Card>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

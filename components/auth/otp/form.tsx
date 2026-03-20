@@ -22,20 +22,22 @@ const validationSchema = Yup.object({
 });
 
 const OtpForm = () => {
-  const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL
-    ? process.env.NEXT_PUBLIC_DASHBOARD_URL
-    : "https://dashboard.thrico.com/";
   const storeToken = useTokenStore((state) => state.storeToken);
   const { id } = useParams();
   const router = useRouter();
 
   const [login, { loading }] = useOtpLogin({
     async onCompleted(data: any) {
-      await toast.success("Login Success");
-      await storeToken(data?.otpLogin?.token);
-      await router.push(
-        `${DASHBOARD_URL}/auth/callback?code=${data?.otpLogin?.token}`
-      );
+      console.log("OTP Login Response:", data);
+      const token = data?.otpLogin?.token;
+      if (token) {
+        // Save token to localStorage via Zustand store
+        await storeToken(token);
+        toast.success("Login Success");
+
+        // Redirect to My Accounts page
+        router.push("/my-accounts");
+      }
     },
   });
 
@@ -63,7 +65,10 @@ const OtpForm = () => {
           <Form className="w-full">
             <div className="flex flex-col items-center space-y-6">
               <div className="space-y-3 w-full flex flex-col items-center">
-                <Label htmlFor="otp" className="text-sm font-medium text-center">
+                <Label
+                  htmlFor="otp"
+                  className="text-sm font-medium text-center"
+                >
                   Verification Code
                 </Label>
                 <InputOTP
