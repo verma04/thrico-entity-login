@@ -3,7 +3,6 @@
 import React, { useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { motion, type Variants } from "framer-motion";
 import { Building2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -29,18 +28,6 @@ interface RegisterEntityEntityProps {
   setOrganization: (org: any) => void;
 }
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      staggerChildren: 0.1,
-    },
-  },
-};
-
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Entity name is required"),
   entityType: Yup.string().required("Category is required"),
@@ -62,6 +49,24 @@ const FormikStepSync = ({ step }: { step: number }) => {
   return null;
 };
 
+const entityTypes = [
+  { value: "academia", label: "Academia", description: "Educational Institution" },
+  { value: "enterprise", label: "Enterprise", description: "Large Business" },
+  { value: "creator", label: "Creator", description: "Content Creator" },
+  { value: "association", label: "Association", description: "Non-profit / Group" },
+  { value: "startup", label: "Startup", description: "Early-stage Company" },
+];
+
+const industryTypes = [
+  { value: "Technology", label: "Technology", icon: "💻" },
+  { value: "Retail", label: "Retail", icon: "🛍️" },
+  { value: "Education", label: "Education", icon: "🎓" },
+  { value: "Finance", label: "Finance", icon: "💰" },
+  { value: "Healthcare", label: "Healthcare", icon: "🏥" },
+  { value: "Manufacturing", label: "Manufacturing", icon: "🏭" },
+  { value: "other", label: "Other", icon: "📊" },
+];
+
 const RegisterEntityEntity: React.FC<RegisterEntityEntityProps> = ({
   setCurrent,
   organization,
@@ -75,24 +80,6 @@ const RegisterEntityEntity: React.FC<RegisterEntityEntityProps> = ({
     }),
     [organization]
   );
-
-  const entityTypes = [
-    { value: "academia", label: "Academia", description: "Educational Institution" },
-    { value: "enterprise", label: "Enterprise", description: "Large Business" },
-    { value: "creator", label: "Creator", description: "Content Creator" },
-    { value: "association", label: "Association", description: "Non-profit / Group" },
-    { value: "startup", label: "Startup", description: "Early-stage Company" },
-  ];
-
-  const industryTypes = [
-    { value: "Technology", label: "Technology", icon: "💻" },
-    { value: "Retail", label: "Retail", icon: "🛍️" },
-    { value: "Education", label: "Education", icon: "🎓" },
-    { value: "Finance", label: "Finance", icon: "💰" },
-    { value: "Healthcare", label: "Healthcare", icon: "🏥" },
-    { value: "Manufacturing", label: "Manufacturing", icon: "🏭" },
-    { value: "other", label: "Other", icon: "📊" },
-  ];
 
   const onFinish = (values: OrganizationFormData) => {
     setOrganization({ ...organization, ...values });
@@ -110,115 +97,151 @@ const RegisterEntityEntity: React.FC<RegisterEntityEntityProps> = ({
       {({ values, errors, touched, setFieldValue, handleBlur, handleChange }) => (
         <Form className="w-full">
           <FormikStepSync step={3} />
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="w-full max-w-xl mx-auto px-4"
-          >
-            <div className="text-center mb-10">
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 mb-6"
-              >
-                <Building2 className="h-8 w-8 text-primary" />
-              </motion.div>
-              <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-3">
-                Organization Details
-              </h2>
-              <p className="text-slate-500 dark:text-slate-400 text-[15px] font-medium max-w-[280px] mx-auto">
-                Tell us about the entity you're registering
-              </p>
+
+          <div className="rs-header">
+            <h2 className="rs-title">Organization details</h2>
+            <p className="rs-sub">Tell us about the entity you're registering</p>
+          </div>
+
+          <div className="rs-fields">
+            <div className="rs-field">
+              <Label className="rs-label">
+                Entity Name <span className="rs-required">*</span>
+              </Label>
+              <div className="rs-input-wrap">
+                <Input
+                  name="name"
+                  placeholder="e.g. Acme Corp"
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={cn(
+                    "rs-input",
+                    touched.name && errors.name && "rs-input--error"
+                  )}
+                />
+                <Building2 className="rs-icon" />
+              </div>
+              {touched.name && errors.name && (
+                <p className="rs-error">{errors.name as string}</p>
+              )}
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label className="text-[13px] font-bold uppercase tracking-widest text-slate-400 ml-1">
-                  Entity Name
+            <div className="rs-row rs-row--2">
+              <div className="rs-field">
+                <Label className="rs-label">
+                  Category <span className="rs-required">*</span>
                 </Label>
-                <div className="relative group/input">
-                  <Input
-                    name="name"
-                    placeholder="e.g. Acme Corp"
-                    value={values.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                <Select
+                  onValueChange={(val) => setFieldValue("entityType", val)}
+                  defaultValue={values.entityType}
+                >
+                  <SelectTrigger
                     className={cn(
-                      "h-14 pl-12 rounded-[1.25rem] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm font-medium",
-                      touched.name && errors.name && "border-destructive focus:ring-destructive/10"
+                      "rs-select-trigger",
+                      !values.entityType && "rs-placeholder",
+                      touched.entityType && errors.entityType && "rs-input--error"
                     )}
-                  />
-                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
-                </div>
-                {touched.name && errors.name && (
-                  <p className="ml-1 text-[12px] text-destructive font-medium">{errors.name as string}</p>
+                  >
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {entityTypes.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        <div className="flex flex-col py-0.5">
+                          <span className="font-semibold text-sm">{item.label}</span>
+                          <span className="text-[11px] text-slate-400">{item.description}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {touched.entityType && errors.entityType && (
+                  <p className="rs-error">{errors.entityType as string}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-[13px] font-bold uppercase tracking-widest text-slate-400 ml-1">
-                    Category
-                  </Label>
-                  <Select 
-                    onValueChange={(val) => setFieldValue("entityType", val)} 
-                    defaultValue={values.entityType}
+              <div className="rs-field">
+                <Label className="rs-label">
+                  Industry <span className="rs-required">*</span>
+                </Label>
+                <Select
+                  onValueChange={(val) => setFieldValue("industryType", val)}
+                  defaultValue={values.industryType}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "rs-select-trigger",
+                      !values.industryType && "rs-placeholder",
+                      touched.industryType && errors.industryType && "rs-input--error"
+                    )}
                   >
-                    <SelectTrigger className={cn(
-                      "h-14 rounded-[1.25rem] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-primary/10 transition-all shadow-sm font-medium",
-                      touched.entityType && errors.entityType && "border-destructive"
-                    )}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {entityTypes.map((item) => (
-                        <SelectItem key={item.value} value={item.value} className="rounded-lg">
-                          <div className="flex flex-col py-0.5">
-                            <span className="font-bold text-sm">{item.label}</span>
-                            <span className="text-[10px] text-slate-400 uppercase tracking-tighter">{item.description}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {touched.entityType && errors.entityType && (
-                    <p className="ml-1 text-[12px] text-destructive font-medium">{errors.entityType as string}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[13px] font-bold uppercase tracking-widest text-slate-400 ml-1">
-                    Industry
-                  </Label>
-                  <Select 
-                    onValueChange={(val) => setFieldValue("industryType", val)} 
-                    defaultValue={values.industryType}
-                  >
-                    <SelectTrigger className={cn(
-                      "h-14 rounded-[1.25rem] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-primary/10 transition-all shadow-sm font-medium",
-                      touched.industryType && errors.industryType && "border-destructive"
-                    )}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {industryTypes.map((item) => (
-                        <SelectItem key={item.value} value={item.value} className="rounded-lg">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg">{item.icon}</span>
-                            <span className="font-bold text-sm">{item.label}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {touched.industryType && errors.industryType && (
-                    <p className="ml-1 text-[12px] text-destructive font-medium">{errors.industryType as string}</p>
-                  )}
-                </div>
+                    <SelectValue placeholder="Select industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {industryTypes.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        <div className="flex items-center gap-2">
+                          <span>{item.icon}</span>
+                          <span className="font-semibold text-sm">{item.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {touched.industryType && errors.industryType && (
+                  <p className="rs-error">{errors.industryType as string}</p>
+                )}
               </div>
             </div>
-          </motion.div>
+          </div>
+
+          <style>{`
+            .rs-header { margin-bottom: 28px; }
+            .rs-title {
+              font-size: 20px; font-weight: 800; color: #0f172a;
+              letter-spacing: -0.4px; margin: 0 0 6px;
+            }
+            .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
+            .rs-fields { display: flex; flex-direction: column; gap: 20px; }
+            .rs-row { display: flex; gap: 16px; }
+            .rs-row--2 > * { flex: 1; min-width: 0; }
+            @media (max-width: 520px) { .rs-row { flex-direction: column; } }
+            .rs-field { display: flex; flex-direction: column; gap: 6px; }
+            .rs-label {
+              font-size: 12px !important; font-weight: 700 !important;
+              letter-spacing: 0.4px !important; text-transform: uppercase !important;
+              color: #475569 !important;
+            }
+            .rs-required { color: #ef4444; }
+            .rs-input-wrap { position: relative; }
+            .rs-input {
+              height: 42px !important; padding-left: 38px !important;
+              border-radius: 10px !important; border: 1px solid #e2e8f0 !important;
+              background: #fff !important; font-size: 14px !important;
+              font-weight: 500 !important; color: #0f172a !important;
+              transition: border-color 0.15s, box-shadow 0.15s !important;
+              font-family: inherit !important;
+            }
+            .rs-input:focus {
+              border-color: #6366f1 !important;
+              box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important; outline: none !important;
+            }
+            .rs-input--error { border-color: #ef4444 !important; }
+            .rs-select-trigger {
+              height: 42px !important; border-radius: 10px !important;
+              border: 1px solid #e2e8f0 !important; background: #fff !important;
+              font-size: 14px !important; font-weight: 500 !important;
+              color: #0f172a !important; font-family: inherit !important;
+            }
+            .rs-select-trigger:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important; }
+            .rs-placeholder { color: #94a3b8 !important; }
+            .rs-icon {
+              position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+              height: 15px; width: 15px; color: #94a3b8; pointer-events: none;
+            }
+            .rs-error { font-size: 12px; color: #ef4444; margin: 0; font-weight: 500; }
+          `}</style>
         </Form>
       )}
     </Formik>

@@ -2,109 +2,195 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileText, Users, ShoppingCart, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, Users, Globe, Zap } from "lucide-react";
 
 interface RegisterEntityWelcomeProps {
   onStart: () => void;
 }
 
+const features = [
+  {
+    icon: Users,
+    color: "#6366f1",
+    bg: "rgba(99,102,241,0.08)",
+    title: "Community-first",
+    desc: "Engage, grow, and retain your members with powerful community tools.",
+  },
+  {
+    icon: Globe,
+    color: "#06b6d4",
+    bg: "rgba(6,182,212,0.08)",
+    title: "Global reach",
+    desc: "Localised experiences with 180+ country support and multi-language.",
+  },
+  {
+    icon: Zap,
+    color: "#f59e0b",
+    bg: "rgba(245,158,11,0.08)",
+    title: "Everything built-in",
+    desc: "Events, forums, marketplace, analytics — one platform, zero plugins.",
+  },
+];
+
 const RegisterEntityWelcome = ({ onStart }: RegisterEntityWelcomeProps) => {
-  const features = [
-    {
-      icon: <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500"><FileText className="h-6 w-6" /></div>,
-      title: "Intelligent Content",
-      description: "Harness AI to power your community's knowledge base and storytelling.",
-    },
-    {
-      icon: <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-all duration-500"><Users className="h-6 w-6" /></div>,
-      title: "Global Community",
-      description: "Scale your reach with localized experiences and deep member engagement.",
-    },
-    {
-      icon: <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500"><ShoppingCart className="h-6 w-6" /></div>,
-      title: "Ecosystem Commerce",
-      description: "Create value through integrated marketplaces and member-to-member trade.",
-    },
-  ];
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 px-4">
-      <div className="max-w-3xl mx-auto w-full text-center mb-16">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-black uppercase tracking-widest mb-6"
-        >
-          <Sparkles className="h-3 w-3" />
-          The future of organizations
-        </motion.div>
-        
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight mb-8 bg-linear-to-b from-slate-900 via-slate-900 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 bg-clip-text text-transparent"
-        >
-          Build your entity <br />
-          <span className="text-primary italic">for the new age.</span>
-        </motion.h1>
+    <div className="rw-root">
+      <div className="rw-card">
+        {/* Eyebrow */}
+        <p className="rw-eyebrow">Entity Registration</p>
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
-          Everything you need to launch, manage, and scale your organization in a decentralized world. 
-          Professional tools for visionary leaders.
-        </motion.p>
+        {/* Headline */}
+        <h1 className="rw-headline">
+          Your community platform,
+          <br />
+          <span className="rw-accent">set up in minutes.</span>
+        </h1>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        {/* Sub */}
+        <p className="rw-sub">
+          A short onboarding to configure your workspace. It takes under 3 minutes.
+        </p>
+
+        {/* CTA */}
+        <Button
+          id="start-registration-btn"
+          size="lg"
+          onClick={onStart}
+          className="rw-btn"
         >
-          <Button 
-            size="lg" 
-            onClick={onStart} 
-            className="h-16 px-10 rounded-[2rem] text-lg font-bold group shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-500"
-          >
-            Start Registration
-            <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="lg" 
-            className="h-16 px-10 rounded-[2rem] text-lg font-bold hover:bg-white/50 dark:hover:bg-white/10"
-          >
-            Learn More
-          </Button>
-        </motion.div>
+          Get started
+          <ArrowRight className="h-4 w-4 ml-2" />
+        </Button>
+
+        {/* Divider */}
+        <div className="rw-divider" />
+
+        {/* Features */}
+        <div className="rw-features">
+          {features.map((f) => {
+            const Icon = f.icon;
+            return (
+              <div key={f.title} className="rw-feature">
+                <div
+                  className="rw-feature-icon"
+                  style={{ background: f.bg, color: f.color }}
+                >
+                  <Icon className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="rw-feature-title">{f.title}</p>
+                  <p className="rw-feature-desc">{f.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Features Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-        {features.map((feature, index) => (
-          <motion.div
-            key={feature.title}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 + index * 0.1, duration: 0.8 }}
-            className="group relative p-8 rounded-[2rem] bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border border-white/20 dark:border-white/5 hover:border-primary/30 transition-all duration-500"
-          >
-            <div className="mb-6">{feature.icon}</div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              {feature.title}
-            </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              {feature.description}
-            </p>
-          </motion.div>
-        ))}
-      </div>
+      <style>{`
+        .rw-root {
+          width: 100%;
+          padding: 40px 16px 0;
+          display: flex;
+          justify-content: center;
+        }
+        .rw-card {
+          width: 100%;
+          max-width: 500px;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 20px;
+          padding: 44px 40px 40px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+          animation: step-in 0.3s ease both;
+        }
+        @keyframes step-in {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .rw-eyebrow {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #6366f1;
+          margin: 0 0 14px;
+        }
+        .rw-headline {
+          font-size: clamp(26px, 4vw, 34px);
+          font-weight: 800;
+          line-height: 1.2;
+          letter-spacing: -0.8px;
+          color: #0f172a;
+          margin: 0 0 16px;
+        }
+        .rw-accent {
+          color: #6366f1;
+        }
+        .rw-sub {
+          font-size: 15px;
+          color: #64748b;
+          line-height: 1.6;
+          margin: 0 0 28px;
+        }
+        .rw-btn {
+          height: 48px;
+          padding: 0 28px;
+          border-radius: 12px;
+          font-size: 15px;
+          font-weight: 700;
+          background: #0f172a;
+          color: #fff;
+          display: inline-flex;
+          align-items: center;
+          transition: background 0.15s, transform 0.12s;
+        }
+        .rw-btn:hover {
+          background: #1e293b;
+          transform: translateY(-1px);
+        }
+        .rw-btn:active { transform: scale(0.98); }
+        .rw-divider {
+          height: 1px;
+          background: #f1f5f9;
+          margin: 32px 0;
+        }
+        .rw-features {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .rw-feature {
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+        }
+        .rw-feature-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          margin-top: 1px;
+        }
+        .rw-feature-title {
+          font-size: 14px;
+          font-weight: 700;
+          color: #0f172a;
+          margin: 0 0 3px;
+        }
+        .rw-feature-desc {
+          font-size: 13px;
+          color: #64748b;
+          margin: 0;
+          line-height: 1.5;
+        }
+        @media (max-width: 480px) {
+          .rw-card { padding: 32px 24px 28px; }
+        }
+      `}</style>
     </div>
   );
 };

@@ -1,562 +1,581 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-import { Toaster, toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import ThricoLogo from "../logo";
+import { Toaster } from "sonner";
 import {
   Users,
   Globe,
   BarChart3,
-  Sparkles,
-  CheckCircle2,
   Smartphone,
+  Zap,
+  Shield,
+  ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
+import ThricoLogo from "../logo";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   FEATURE BENTO CARDS — left panel
+───────────────────────────────────────────────────────────────────────────── */
+const features = [
+  {
+    icon: Users,
+    label: "Community",
+    desc: "Engage & grow your members",
+    accent: "#6366f1",
+    bg: "rgba(99,102,241,0.12)",
+  },
+  {
+    icon: Globe,
+    label: "Website Builder",
+    desc: "Launch pages without code",
+    accent: "#06b6d4",
+    bg: "rgba(6,182,212,0.12)",
+  },
+  {
+    icon: BarChart3,
+    label: "Analytics",
+    desc: "Real-time data insights",
+    accent: "#8b5cf6",
+    bg: "rgba(139,92,246,0.12)",
+  },
+  {
+    icon: Smartphone,
+    label: "Mobile & Domain",
+    desc: "White-label app & site",
+    accent: "#f59e0b",
+    bg: "rgba(245,158,11,0.12)",
+  },
+  {
+    icon: Zap,
+    label: "Automations",
+    desc: "Workflows on autopilot",
+    accent: "#10b981",
+    bg: "rgba(16,185,129,0.12)",
+  },
+  {
+    icon: Shield,
+    label: "Security",
+    desc: "Enterprise-grade protection",
+    accent: "#ec4899",
+    bg: "rgba(236,72,153,0.12)",
+  },
+];
+
+const modules = [
+  { label: "Feed", color: "#6366f1" },
+  { label: "Stories", color: "#8b5cf6" },
+  { label: "Events", color: "#06b6d4" },
+  { label: "Forums", color: "#10b981" },
+  { label: "Chat", color: "#f59e0b" },
+  { label: "Shop", color: "#ec4899" },
+  { label: "Jobs", color: "#14b8a6" },
+  { label: "Badges", color: "#f97316" },
+  { label: "Newsletter", color: "#6366f1" },
+  { label: "Surveys", color: "#8b5cf6" },
+  { label: "Mentorship", color: "#06b6d4" },
+  { label: "Marketplace", color: "#10b981" },
+  { label: "Offers", color: "#f59e0b" },
+  { label: "Leaderboard", color: "#ec4899" },
+  { label: "Nearby", color: "#14b8a6" },
+  { label: "Network", color: "#f97316" },
+];
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAIN LAYOUT
+───────────────────────────────────────────────────────────────────────────── */
 const AuthLayout = ({ children }: React.PropsWithChildren) => (
-  <div className="min-h-screen w-full flex flex-col lg:flex-row bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950">
+  <div className="auth-root">
     <Toaster position="top-center" richColors />
-    {/* Left Side - Branding & Features */}
-    <div className="hidden lg:flex w-full lg:w-1/2 relative overflow-hidden p-12 flex-col justify-between">
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700" />
 
-      {/* Animated mesh gradient overlay */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl animate-blob" />
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000" />
-      </div>
+    {/* ── LEFT PANEL ─────────────────────────────────────────────────────── */}
+    <aside className="auth-left">
+      {/* Deep dark background */}
+      <div className="auth-left-bg" />
 
-      {/* Floating elements */}
-      <div className="absolute top-20 right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      {/* Ambient gradient orbs */}
+      <div className="orb orb-1" />
+      <div className="orb orb-2" />
+      <div className="orb orb-3" />
 
-      <div className="relative z-10">
-        <div className="space-y-4 animate-in fade-in slide-in-from-left-8 duration-700">
-          <h1 className="text-5xl font-bold text-white leading-tight animate-in fade-in slide-in-from-left-8 duration-700 delay-150">
-            Create & Run Your Own
-            <span className="block mt-2 bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 bg-clip-text text-transparent">
-              Social Media Universe
-            </span>
+      {/* Dot-grid noise overlay */}
+      <div className="auth-dot-grid" />
+
+      {/* ── Content ── */}
+      <div className="auth-left-content">
+
+        {/* Brand mark */}
+        <div className="auth-brand">
+          <div className="auth-brand-dot" />
+          <span className="auth-brand-name">thrico</span>
+          <span className="auth-brand-badge">
+            <Sparkles size={10} />
+            Platform
+          </span>
+        </div>
+
+        {/* Hero headline */}
+        <div className="auth-hero">
+          <h1 className="auth-hero-title">
+            Build Your Own<br />
+            <span className="auth-hero-gradient">Social Universe</span>
           </h1>
-
-          {/* <p className="text-lg text-blue-100/90 max-w-md leading-relaxed animate-in fade-in slide-in-from-left-8 duration-700 delay-300">
-            Build thriving communities by creating engaging experiences,
-            managing members effortlessly, and scaling your community to new
-            heights.
-          </p> */}
-        </div>
-      </div>
-
-      <div className="relative z-10 space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
-        {/* Features with icons */}
-        <div className="space-y-4">
-          <div className="flex items-start gap-4 group cursor-pointer">
-            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-white/20">
-              <Users className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-white mb-1 group-hover:text-blue-200 transition-colors">
-                Community Management
-              </h3>
-              <p className="text-sm text-blue-100/80">
-                Powerful tools to engage and grow your community
-              </p>
-            </div>
-            <CheckCircle2 className="h-5 w-5 text-blue-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-
-          <div className="flex items-start gap-4 group cursor-pointer">
-            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-white/20">
-              <Globe className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-white mb-1 group-hover:text-blue-200 transition-colors">
-                Website Builder
-              </h3>
-              <p className="text-sm text-blue-100/80">
-                Create stunning pages without writing code
-              </p>
-            </div>
-            <CheckCircle2 className="h-5 w-5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-
-          <div className="flex items-start gap-4 group cursor-pointer">
-            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-white/20">
-              <BarChart3 className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-white mb-1 group-hover:text-blue-200 transition-colors">
-                Real-time Analytics
-              </h3>
-              <p className="text-sm text-blue-100/80">
-                Track engagement and make data-driven decisions
-              </p>
-            </div>
-            <CheckCircle2 className="h-5 w-5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-
-          <div className="flex items-start gap-4 group cursor-pointer">
-            <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-white/20">
-              <Smartphone className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-white mb-1 group-hover:text-blue-200 transition-colors">
-                Brand Mobile & Custom Domain
-              </h3>
-              <p className="text-sm text-blue-100/80">
-                Launch your own white-label mobile apps and site
-              </p>
-            </div>
-            <CheckCircle2 className="h-5 w-5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
+          <p className="auth-hero-sub">
+            One platform. Every tool your community needs.
+          </p>
         </div>
 
-        {/* Categories and Features Display */}
-        <div className="py-4 space-y-6">
-          {/* Entity Categories - Static Grid */}
-          <div>
-            <p className="text-xs text-blue-300/70 mb-3 text-center font-medium uppercase tracking-wider">
-              Your Community. One Platform. Any Scale.
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                🚀 Startup
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-blue-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                🤝 Association
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                🎓 Academia
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                🏢 Enterprise
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-lg text-xs text-white border border-white/20 font-medium hover:scale-105 transition-transform">
-                ✨ Creator
-              </span>
-            </div>
-          </div>
-
-          {/* Feature Modules - Organized by Category */}
-          <div className="border-t border-white/10 pt-6 space-y-4">
-            <p className="text-xs text-purple-300/70 mb-4 text-center font-medium uppercase tracking-wider">
-              Your All-in-One Community Management Platform
-            </p>
-
-            {/* Marquee Container */}
-            <div className="relative overflow-hidden">
-              <style jsx>{`
-                @keyframes marquee {
-                  0% {
-                    transform: translateX(0);
-                  }
-                  100% {
-                    transform: translateX(-50%);
-                  }
-                }
-                .marquee-content {
-                  animation: marquee 40s linear infinite;
-                }
-                .marquee-content:hover {
-                  animation-play-state: paused;
-                }
-              `}</style>
-
-              <div className="flex gap-2.5 marquee-content">
-                {/* First set of categories */}
-                <div className="flex gap-2.5 shrink-0">
-                  {/* Content */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-blue-300 mb-1.5 uppercase tracking-wider">
-                      Content
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Feed
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Stories
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Media
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Newsletter
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Connections */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-indigo-300 mb-1.5 uppercase tracking-wider">
-                      Connections
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Network
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Nearby
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        New to City
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Conversations */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-purple-300 mb-1.5 uppercase tracking-wider">
-                      Conversations
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Events
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Forums
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Chat
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Commerce */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-pink-300 mb-1.5 uppercase tracking-wider">
-                      Commerce
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Shop
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Offers
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Marketplace
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Celebrations */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-yellow-300 mb-1.5 uppercase tracking-wider">
-                      Celebrations
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Birthdays
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Anniversaries
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Spotlight
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Careers */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-green-300 mb-1.5 uppercase tracking-wider">
-                      Careers
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Jobs
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Mentorship
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Companies
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Gamification */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-orange-300 mb-1.5 uppercase tracking-wider">
-                      Gamification
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Badges
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Ranks
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Leaderboard
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Care */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-teal-300 mb-1.5 uppercase tracking-wider">
-                      Care
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Polls
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Surveys
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Feedback
-                      </span>
-                    </div>
-                  </div>
+        {/* Bento feature grid */}
+        <div className="auth-bento">
+          {features.map((f, i) => {
+            const Icon = f.icon;
+            return (
+              <div
+                key={i}
+                className="bento-card"
+                style={{ "--accent": f.accent, "--bg": f.bg } as React.CSSProperties}
+              >
+                <div className="bento-icon-wrap">
+                  <Icon size={16} strokeWidth={1.8} />
                 </div>
-
-                {/* Duplicate set for seamless loop */}
-                <div className="flex gap-2.5 shrink-0">
-                  {/* Content */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-blue-300 mb-1.5 uppercase tracking-wider">
-                      Content
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Feed
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Stories
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Media
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Newsletter
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Connections */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-indigo-300 mb-1.5 uppercase tracking-wider">
-                      Connections
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Network
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Nearby
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        New to City
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Conversations */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-purple-300 mb-1.5 uppercase tracking-wider">
-                      Conversations
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Events
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Forums
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Chat
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Commerce */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-pink-300 mb-1.5 uppercase tracking-wider">
-                      Commerce
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Shop
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Offers
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Marketplace
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Celebrations */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-yellow-300 mb-1.5 uppercase tracking-wider">
-                      Celebrations
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Birthdays
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Anniversaries
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Spotlight
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Careers */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-green-300 mb-1.5 uppercase tracking-wider">
-                      Careers
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Jobs
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Mentorship
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Companies
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Gamification */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-orange-300 mb-1.5 uppercase tracking-wider">
-                      Gamification
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Badges
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Ranks
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Leaderboard
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Care */}
-                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 hover:bg-white/10 transition-colors w-38">
-                    <h4 className="text-[8px] font-semibold text-teal-300 mb-1.5 uppercase tracking-wider">
-                      Care
-                    </h4>
-                    <div className="flex flex-wrap gap-0.5">
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Polls
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Surveys
-                      </span>
-                      <span className="text-[7px] text-white/80 px-1.5 py-0.5 bg-white/10 rounded-full">
-                        Feedback
-                      </span>
-                    </div>
-                  </div>
+                <div className="bento-body">
+                  <p className="bento-label">{f.label}</p>
+                  <p className="bento-desc">{f.desc}</p>
                 </div>
+                <ArrowUpRight size={14} className="bento-arrow" />
               </div>
+            );
+          })}
+        </div>
+
+        {/* Scrolling module pills */}
+        <div className="auth-marquee-wrap">
+          <p className="auth-marquee-eyebrow">Included Modules</p>
+          <div className="auth-marquee-track">
+            <div className="auth-marquee-row marquee-fwd">
+              {[...modules, ...modules].map((m, i) => (
+                <span
+                  key={i}
+                  className="module-pill"
+                  style={{ "--pill-color": m.color } as React.CSSProperties}
+                >
+                  {m.label}
+                </span>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* Stats row */}
+        <div className="auth-stats">
+          {[
+            { val: "50K+", label: "Communities" },
+            { val: "99.9%", label: "Uptime" },
+            { val: "180+", label: "Countries" },
+          ].map((s, i) => (
+            <div key={i} className="auth-stat">
+              <span className="auth-stat-val">{s.val}</span>
+              <span className="auth-stat-label">{s.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </aside>
 
-    {/* Right Side - Auth Form */}
-    <div className="flex w-full lg:w-1/2 items-center justify-center p-6 lg:p-12 relative overflow-hidden">
-      {/* Decorative gradient orbs for mobile/right side */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-cyan-400/20 rounded-full blur-3xl -z-10" />
-      <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-purple-400/10 rounded-full blur-3xl -z-10 animate-pulse delay-700" />
+    {/* ── RIGHT PANEL ────────────────────────────────────────────────────── */}
+    <main className="auth-right">
+      {/* Soft background tint */}
+      <div className="auth-right-bg" />
 
-      {/* Subtle grid pattern for texture */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+      {/* The glass card */}
+      <div className="auth-card">
+        {/* Top gradient stripe */}
+        <div className="auth-card-stripe" />
 
-      <div className="w-full max-w-md relative z-10">
-        <Card className="border border-slate-200/50 dark:border-slate-700/50 shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl animate-in fade-in slide-in-from-right-8 duration-700 overflow-hidden ring-1 ring-white/50 dark:ring-slate-700/50">
-          {/* Card Header with gradient border */}
-          <CardHeader className="relative pb-6 pt-8 px-8">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
-            <div className="flex justify-center">
-              <div className="transform hover:scale-105 transition-transform duration-300 drop-shadow-lg">
-                <ThricoLogo />
-              </div>
-            </div>
-          </CardHeader>
+        {/* Logo */}
+        <div className="auth-card-logo">
+          <ThricoLogo />
+        </div>
 
-          {/* Form Content */}
-          <CardContent className="px-8 pb-8">{children}</CardContent>
+        {/* Form children */}
+        <div className="auth-card-body">{children}</div>
 
-          {/* Footer */}
-          <CardFooter className="flex-col gap-4 border-t border-slate-100 dark:border-slate-800 pt-6 pb-8 px-8 bg-slate-50/30 dark:bg-slate-900/30 backdrop-blur-sm">
-            {/* Footer Links */}
-            <div className="flex items-center justify-center gap-6">
+        {/* Footer */}
+        <div className="auth-card-footer">
+          <div className="auth-footer-links">
+            {["Help", "Privacy", "Terms"].map((text, i) => (
               <Link
-                target="_blank"
+                key={i}
                 href="https://thrico.com/privacy-policy/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group font-medium"
-              >
-                Help
-                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-              </Link>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <Link
                 target="_blank"
-                href="https://thrico.com/privacy-policy/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group font-medium"
+                className="auth-footer-link"
               >
-                Privacy
-                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+                {text}
               </Link>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <Link
-                target="_blank"
-                href="https://thrico.com/privacy-policy/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors relative group font-medium"
-              >
-                Terms
-                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-              </Link>
-            </div>
-
-            {/* Trust badges */}
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/5 dark:bg-green-500/10 border border-green-500/10">
-                  <span className="text-green-500 text-[10px]">🔒</span>
-                  <span className="font-medium text-green-700 dark:text-green-400">
-                    SSL Secured
-                  </span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10">
-                  <span className="text-blue-500 text-[10px]">⚡</span>
-                  <span className="font-medium text-blue-700 dark:text-blue-400">
-                    Fast & Reliable
-                  </span>
-                </span>
-              </div>
-              {/* <p className="text-[10px] text-muted-foreground/70 tracking-wide pt-1">
-                Trusted by 10,000+ communities worldwide
-              </p> */}
-            </div>
-          </CardFooter>
-        </Card>
+            ))}
+          </div>
+          <div className="auth-footer-trust">
+            <span className="trust-badge trust-green">🔒 SSL Secured</span>
+            <span className="trust-badge trust-blue">⚡ Fast & Reliable</span>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
+
+    {/* ── Global Styles ───────────────────────────────────────────────────── */}
+    <style>{`
+      /* ── Root Layout ──────────────────────────────────────────────── */
+      .auth-root {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+      }
+      @media (min-width: 1024px) {
+        .auth-root { flex-direction: row; }
+      }
+
+      /* ── LEFT PANEL ───────────────────────────────────────────────── */
+      .auth-left {
+        display: none;
+        position: relative;
+        overflow: hidden;
+        width: 50%;
+        flex-shrink: 0;
+      }
+      @media (min-width: 1024px) {
+        .auth-left { display: flex; flex-direction: column; }
+      }
+
+      .auth-left-bg {
+        position: absolute; inset: 0;
+        background: linear-gradient(145deg,
+          #0a0a14 0%,
+          #0d0f1f 30%,
+          #0f0a1e 60%,
+          #06090f 100%
+        );
+        z-index: 0;
+      }
+
+      /* Orbs */
+      .orb {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(80px);
+        z-index: 1;
+        animation: orb-float 12s ease-in-out infinite alternate;
+      }
+      .orb-1 {
+        width: 440px; height: 440px;
+        top: -120px; left: -100px;
+        background: radial-gradient(circle, rgba(99,102,241,0.28) 0%, transparent 70%);
+        animation-delay: 0s;
+      }
+      .orb-2 {
+        width: 380px; height: 380px;
+        bottom: -80px; right: -60px;
+        background: radial-gradient(circle, rgba(139,92,246,0.22) 0%, transparent 70%);
+        animation-delay: -4s;
+      }
+      .orb-3 {
+        width: 300px; height: 300px;
+        top: 45%; left: 30%;
+        background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
+        animation-delay: -8s;
+      }
+      @keyframes orb-float {
+        0%   { transform: translate(0,0) scale(1); }
+        50%  { transform: translate(24px,-18px) scale(1.07); }
+        100% { transform: translate(-16px,14px) scale(0.95); }
+      }
+
+      /* Dot-grid */
+      .auth-dot-grid {
+        position: absolute; inset: 0; z-index: 2;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+        background-size: 28px 28px;
+        mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+      }
+
+      /* ── Left Content ─────────────────────────────────────────────── */
+      .auth-left-content {
+        position: relative; z-index: 10;
+        display: flex; flex-direction: column;
+        height: 100%;
+        padding: 44px 40px 36px;
+        gap: 32px;
+      }
+
+      /* Brand */
+      .auth-brand {
+        display: flex; align-items: center; gap: 10px;
+      }
+      .auth-brand-dot {
+        width: 10px; height: 10px; border-radius: 9999px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        box-shadow: 0 0 10px rgba(99,102,241,0.8);
+      }
+      .auth-brand-name {
+        font-size: 18px; font-weight: 700; letter-spacing: -0.5px;
+        color: #fff;
+      }
+      .auth-brand-badge {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 2px 9px; border-radius: 999px;
+        font-size: 10px; font-weight: 600; letter-spacing: 0.4px;
+        color: rgba(99,102,241,0.9);
+        background: rgba(99,102,241,0.12);
+        border: 1px solid rgba(99,102,241,0.3);
+      }
+
+      /* Hero */
+      .auth-hero { display: flex; flex-direction: column; gap: 10px; }
+      .auth-hero-title {
+        font-size: clamp(28px, 3vw, 40px);
+        font-weight: 800;
+        line-height: 1.18;
+        letter-spacing: -1px;
+        color: #f0f0ff;
+        margin: 0;
+      }
+      .auth-hero-gradient {
+        background: linear-gradient(100deg, #818cf8,#a78bfa,#67e8f9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .auth-hero-sub {
+        font-size: 14px; color: rgba(200,200,240,0.55);
+        margin: 0; font-weight: 400; line-height: 1.5;
+      }
+
+      /* ── Bento Grid ───────────────────────────────────────────────── */
+      .auth-bento {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .bento-card {
+        display: flex; align-items: flex-start; gap: 10px;
+        padding: 14px 14px;
+        background: var(--bg);
+        border: 1px solid rgba(255,255,255,0.065);
+        border-radius: 14px;
+        cursor: default;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .bento-card::before {
+        content: ''; position: absolute; inset: 0;
+        border-radius: 14px;
+        background: linear-gradient(140deg, rgba(255,255,255,0.04) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      .bento-card:hover::before { opacity: 1; }
+      .bento-card:hover {
+        border-color: rgba(255,255,255,0.13);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+      }
+      .bento-icon-wrap {
+        width: 32px; height: 32px; flex-shrink: 0;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: var(--accent);
+      }
+      .bento-body { flex: 1; min-width: 0; }
+      .bento-label {
+        font-size: 12px; font-weight: 600;
+        color: rgba(230,230,255,0.9);
+        margin: 0 0 2px;
+      }
+      .bento-desc {
+        font-size: 10.5px; color: rgba(180,180,220,0.5);
+        margin: 0; line-height: 1.4;
+      }
+      .bento-arrow {
+        color: rgba(255,255,255,0.2); flex-shrink: 0; margin-top: 2px;
+        transition: color 0.2s, transform 0.2s;
+      }
+      .bento-card:hover .bento-arrow {
+        color: var(--accent); transform: translate(2px,-2px);
+      }
+
+      /* ── Marquee ──────────────────────────────────────────────────── */
+      .auth-marquee-wrap { display: flex; flex-direction: column; gap: 10px; }
+      .auth-marquee-eyebrow {
+        font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: rgba(180,180,220,0.4);
+        margin: 0;
+      }
+      .auth-marquee-track {
+        overflow: hidden;
+        mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+      }
+      .auth-marquee-row {
+        display: flex; gap: 8px;
+        width: max-content;
+      }
+      .marquee-fwd { animation: marquee-scroll 38s linear infinite; }
+      @keyframes marquee-scroll {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .module-pill {
+        display: inline-flex; align-items: center;
+        padding: 5px 13px;
+        border-radius: 999px;
+        font-size: 11px; font-weight: 500;
+        color: var(--pill-color);
+        background: color-mix(in srgb, var(--pill-color) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--pill-color) 25%, transparent);
+        white-space: nowrap;
+        transition: transform 0.2s;
+      }
+      .module-pill:hover { transform: scale(1.05); }
+
+      /* ── Stats ────────────────────────────────────────────────────── */
+      .auth-stats {
+        display: flex; gap: 0;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+        background: rgba(255,255,255,0.03);
+        backdrop-filter: blur(12px);
+        overflow: hidden;
+        margin-top: auto;
+      }
+      .auth-stat {
+        flex: 1;
+        display: flex; flex-direction: column; align-items: center;
+        padding: 16px 8px;
+        gap: 3px;
+        border-right: 1px solid rgba(255,255,255,0.07);
+      }
+      .auth-stat:last-child { border-right: none; }
+      .auth-stat-val {
+        font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+        background: linear-gradient(120deg, #818cf8, #c4b5fd);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      }
+      .auth-stat-label {
+        font-size: 10px; color: rgba(180,180,220,0.45); font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+
+      /* ── RIGHT PANEL ──────────────────────────────────────────────── */
+      .auth-right {
+        flex: 1;
+        display: flex; align-items: center; justify-content: center;
+        padding: 32px 20px;
+        position: relative;
+        background: #f8f8fc;
+      }
+      @media (min-width: 1024px) {
+        .auth-right { padding: 48px 40px; }
+      }
+      .auth-right-bg {
+        position: absolute; inset: 0; z-index: 0;
+        background:
+          radial-gradient(ellipse 60% 50% at 80% 10%, rgba(99,102,241,0.08) 0%, transparent 70%),
+          radial-gradient(ellipse 50% 60% at 10% 90%, rgba(139,92,246,0.07) 0%, transparent 70%),
+          #f5f5fb;
+      }
+
+      /* ── Card ─────────────────────────────────────────────────────── */
+      .auth-card {
+        position: relative; z-index: 1;
+        width: 100%; max-width: 420px;
+        background: rgba(255,255,255,0.95);
+        border: 1px solid rgba(99,102,241,0.12);
+        border-radius: 24px;
+        box-shadow:
+          0 2px 4px rgba(0,0,0,0.04),
+          0 8px 24px rgba(99,102,241,0.1),
+          0 32px 64px rgba(0,0,0,0.07);
+        backdrop-filter: blur(24px);
+        overflow: hidden;
+        animation: card-in 0.6s cubic-bezier(0.22,1,0.36,1) both;
+      }
+      @keyframes card-in {
+        from { opacity: 0; transform: translateY(24px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      /* Top accent stripe */
+      .auth-card-stripe {
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      }
+
+      /* Logo */
+      .auth-card-logo {
+        display: flex; justify-content: center;
+        padding: 28px 32px 8px;
+      }
+      .auth-card-logo > * {
+        transition: transform 0.3s ease;
+      }
+      .auth-card-logo > *:hover {
+        transform: scale(1.04);
+      }
+
+      /* Body */
+      .auth-card-body {
+        padding: 16px 32px 8px;
+      }
+
+      /* Footer */
+      .auth-card-footer {
+        display: flex; flex-direction: column; gap: 12px;
+        align-items: center;
+        padding: 16px 32px 24px;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        background: rgba(248,248,252,0.7);
+      }
+      .auth-footer-links {
+        display: flex; align-items: center; gap: 20px;
+      }
+      .auth-footer-link {
+        font-size: 11.5px; font-weight: 500;
+        color: #94a3b8;
+        text-decoration: none;
+        transition: color 0.2s;
+        position: relative;
+      }
+      .auth-footer-link::after {
+        content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+        height: 1px; background: #6366f1;
+        transform: scaleX(0); transform-origin: left;
+        transition: transform 0.2s;
+      }
+      .auth-footer-link:hover { color: #6366f1; }
+      .auth-footer-link:hover::after { transform: scaleX(1); }
+      .auth-footer-trust {
+        display: flex; align-items: center; gap: 10px;
+      }
+      .trust-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 10px; border-radius: 999px;
+        font-size: 10.5px; font-weight: 600;
+      }
+      .trust-green {
+        color: #059669;
+        background: rgba(5,150,105,0.07);
+        border: 1px solid rgba(5,150,105,0.15);
+      }
+      .trust-blue {
+        color: #4f46e5;
+        background: rgba(79,70,229,0.07);
+        border: 1px solid rgba(79,70,229,0.15);
+      }
+    `}</style>
   </div>
 );
 

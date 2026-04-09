@@ -3,7 +3,6 @@
 import React, { useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { motion, type Variants } from "framer-motion";
 import { Globe } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
@@ -33,18 +32,6 @@ interface RegisterEntityPreferencesProps {
   setCurrent: (step: number) => void;
   countries: CountryData[];
 }
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      staggerChildren: 0.1,
-    },
-  },
-};
 
 const validationSchema = Yup.object().shape({
   country: Yup.string().required("Country is required"),
@@ -101,72 +88,105 @@ const RegisterEntityPreferences: React.FC<RegisterEntityPreferencesProps> = ({
       {({ values, errors, touched, setFieldValue }) => (
         <Form className="w-full">
           <FormikStepSync step={2} />
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="w-full max-w-xl mx-auto px-4"
-          >
-            <div className="text-center mb-10">
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 mb-6"
-              >
-                <Globe className="h-8 w-8 text-primary" />
-              </motion.div>
-              <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-3">
-                Regional Settings
-              </h2>
-              <p className="text-slate-500 dark:text-slate-400 text-[15px] font-medium max-w-[280px] mx-auto">
-                Choose your primary region and language for the workspace
-              </p>
-            </div>
 
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label className="text-[13px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2">
-                    Primary Country
-                  </Label>
-                  <div className="relative group/input">
-                    <Select
-                      onValueChange={(val) => setFieldValue("country", val)}
-                      defaultValue={values.country}
-                    >
-                      <SelectTrigger
-                        className={cn(
-                          !values.country && "text-muted-foreground",
-                          "h-14 pl-12 rounded-[1.25rem] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-primary/10 transition-all shadow-sm font-medium",
-                          touched.country && errors.country && "border-destructive"
-                        )}
-                      >
-                        <SelectValue placeholder="Select your country" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[300px] rounded-2xl">
-                        {sortedCountries.map((country: CountryData) => (
-                          <SelectItem key={country.code} value={country.code} className="rounded-lg">
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none group-focus-within:text-primary transition-colors" />
-                  </div>
-                  {touched.country && errors.country && (
-                    <p className="ml-1 text-[12px] text-destructive font-medium">{errors.country as string}</p>
-                  )}
-                </div>
+          <div className="rs-header">
+            <h2 className="rs-title">Regional settings</h2>
+            <p className="rs-sub">Your primary region and language for the workspace</p>
+          </div>
 
-                <div className="pt-2">
-                  <Label className="text-[13px] font-bold uppercase tracking-widest text-slate-400 ml-1 mb-2 block">
-                    Primary Language
-                  </Label>
-                  <Language isFormik initialValue={initialValues.language} />
-                </div>
+          <div className="rs-fields">
+            <div className="rs-field">
+              <Label className="rs-label">
+                Country <span className="rs-required">*</span>
+              </Label>
+              <div className="rs-input-wrap">
+                <Select
+                  onValueChange={(val) => setFieldValue("country", val)}
+                  defaultValue={values.country}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "rs-select-trigger",
+                      !values.country && "rs-placeholder",
+                      touched.country && errors.country && "rs-input--error"
+                    )}
+                  >
+                    <SelectValue placeholder="Select your country" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[280px]">
+                    {sortedCountries.map((country: CountryData) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Globe className="rs-icon" />
               </div>
+              {touched.country && errors.country && (
+                <p className="rs-error">{errors.country as string}</p>
+              )}
             </div>
-          </motion.div>
+
+            <div className="rs-field">
+              <Label className="rs-label">
+                Language <span className="rs-required">*</span>
+              </Label>
+              <Language isFormik initialValue={initialValues.language} />
+            </div>
+          </div>
+
+          <style>{`
+            .rs-header { margin-bottom: 28px; }
+            .rs-title {
+              font-size: 20px;
+              font-weight: 800;
+              color: #0f172a;
+              letter-spacing: -0.4px;
+              margin: 0 0 6px;
+            }
+            .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
+            .rs-fields { display: flex; flex-direction: column; gap: 20px; }
+            .rs-field { display: flex; flex-direction: column; gap: 6px; }
+            .rs-label {
+              font-size: 12px !important;
+              font-weight: 700 !important;
+              letter-spacing: 0.4px !important;
+              text-transform: uppercase !important;
+              color: #475569 !important;
+            }
+            .rs-required { color: #ef4444; }
+            .rs-input-wrap { position: relative; }
+            .rs-select-trigger {
+              height: 42px !important;
+              padding-left: 38px !important;
+              border-radius: 10px !important;
+              border: 1px solid #e2e8f0 !important;
+              background: #fff !important;
+              font-size: 14px !important;
+              font-weight: 500 !important;
+              color: #0f172a !important;
+              font-family: inherit !important;
+            }
+            .rs-select-trigger:focus {
+              border-color: #6366f1 !important;
+              box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
+            }
+            .rs-placeholder { color: #94a3b8 !important; }
+            .rs-input--error { border-color: #ef4444 !important; }
+            .rs-icon {
+              position: absolute;
+              left: 12px;
+              top: 50%;
+              transform: translateY(-50%);
+              height: 15px;
+              width: 15px;
+              color: #94a3b8;
+              pointer-events: none;
+              z-index: 1;
+            }
+            .rs-error { font-size: 12px; color: #ef4444; margin: 0; font-weight: 500; }
+          `}</style>
         </Form>
       )}
     </Formik>

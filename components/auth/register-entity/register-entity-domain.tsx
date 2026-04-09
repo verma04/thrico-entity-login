@@ -3,26 +3,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   CheckCircle2,
   AlertTriangle,
-  Fingerprint,
   Loader2,
-  Link2,
-  Upload,
-  Shield,
   ExternalLink,
+  Upload,
+  Link2,
+  Shield,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useRegisterEntityFormStore } from "@/components/store/registerEntityStore";
 import { useCheckDomain } from "@/components/graphql/actions";
 import { generateSlug } from "random-word-slugs";
-
 import LogoUpload from "./register-entity-logo-upload";
 
 interface DomainFormData {
@@ -42,35 +38,12 @@ interface RegisterEntityDomainProps {
   setLogoPreview: (url: string) => void;
 }
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 15 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-    },
-  },
-};
-
 const validationSchema = Yup.object().shape({
   domain: Yup.string()
-    .min(3, "Min 3 chars")
-    .matches(/^[a-z0-9-]+$/, "Lowercase & hyphens only")
+    .min(3, "Min 3 characters")
+    .matches(/^[a-z0-9-]+$/, "Lowercase letters & hyphens only")
     .required("Subdomain is required"),
-  agreement: Yup.boolean().oneOf([true], "Required").required("Required"),
+  agreement: Yup.boolean().oneOf([true], "You must agree to continue").required("Required"),
 });
 
 const FormikStepSync = ({
@@ -83,13 +56,13 @@ const FormikStepSync = ({
   isLogoUploaded: boolean;
 }) => {
   const { isValid, values, handleSubmit } = useFormikContext<DomainFormData>();
-  const { setStepValidity, setSubmitHandler, setDomain, setOrganization } = useRegisterEntityFormStore();
+  const { setStepValidity, setSubmitHandler, setDomain, setOrganization } =
+    useRegisterEntityFormStore();
 
   React.useEffect(() => {
     setStepValidity(step, isValid && isDomainAvailable && isLogoUploaded);
   }, [isValid, isDomainAvailable, isLogoUploaded, step, setStepValidity]);
 
-  // Keep store in sync for the final submission
   React.useEffect(() => {
     setDomain(values.domain);
   }, [values.domain, setDomain]);
@@ -113,319 +86,286 @@ const DomainFormContent: React.FC<{
   const { values, errors, touched, setFieldValue, handleBlur } =
     useFormikContext<DomainFormData>();
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [debouncedDomain, setDebouncedDomain] = useState(values.domain);
 
   const domain = values.domain;
   const hasValidFormat = domain.length >= 3 && !errors.domain;
 
-  // Domain search with debounced variables
-  const [debouncedDomain, setDebouncedDomain] = useState(domain);
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedDomain(domain);
-    }, 500);
+    const timer = setTimeout(() => setDebouncedDomain(domain), 500);
     return () => clearTimeout(timer);
   }, [domain]);
 
   const { data, loading: checkLoading } = useCheckDomain({
-    variables: {
-      input: { domain: debouncedDomain },
-    },
+    variables: { input: { domain: debouncedDomain } },
     skip: !hasValidFormat || domain !== debouncedDomain,
     fetchPolicy: "network-only",
   });
 
   const isDomainAvailable = hasValidFormat && data?.checkDomain?.success;
   const isDomainTaken = hasValidFormat && data?.checkDomain?.success === false;
+  const isChecking = (checkLoading || domain !== debouncedDomain) && domain.length >= 3;
 
   const generateSuggestions = () => {
-    const newSuggestions = Array.from({ length: 3 }, () =>
-      generateSlug(3, { format: "kebab" }),
+    setSuggestions(
+      Array.from({ length: 4 }, () => generateSlug(2, { format: "kebab" }))
     );
-    setSuggestions(newSuggestions);
   };
 
   useEffect(() => {
-    if (suggestions.length === 0) {
-      generateSuggestions();
-    }
+    if (suggestions.length === 0) generateSuggestions();
   }, [suggestions.length]);
 
   const handleDomainChange = (value: string) => {
-    let sanitized = value.toLowerCase();
-    sanitized = sanitized.replace(/\s+/g, "-");
-    sanitized = sanitized.replace(/[^a-z0-9-]/g, "");
-    sanitized = sanitized.replace(/^-+|-+$/g, "");
-    sanitized = sanitized.replace(/-{2,}/g, "-");
-    setFieldValue("domain", sanitized);
+    let s = value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    s = s.replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-");
+    setFieldValue("domain", s);
   };
 
-  const fullDomain = domain ? `https://${domain}.thrico.community` : "";
+  const fullDomain = domain ? `${domain}.thrico.community` : "";
 
   return (
     <Form className="w-full">
-      <FormikStepSync 
-        step={5} 
-        isDomainAvailable={isDomainAvailable === true} 
+      <FormikStepSync
+        step={5}
+        isDomainAvailable={isDomainAvailable === true}
         isLogoUploaded={!!logoPreview}
       />
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="w-full max-w-2xl mx-auto flex flex-col gap-10 px-4"
-      >
-        {/* Header Section */}
-        <motion.div variants={itemVariants} className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-[2rem] bg-indigo-500/10 mb-6 group transition-all duration-500 hover:scale-110 shadow-indigo-500/5 shadow-2xl">
-            <Fingerprint className="h-8 w-8 text-indigo-500" />
-          </div>
-          <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-2 uppercase italic scale-y-110">
-            Identity & Branding
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-            Customize your unique digital presence within the Thrico ecosystem
-          </p>
-        </motion.div>
 
-        {/* Logo Upload Section */}
-        <motion.div variants={itemVariants} className="space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <Upload className="h-4 w-4 text-indigo-500" />
-            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400">
-              Workspace Logo
-            </h3>
+      <div className="rd-header">
+        <h2 className="rs-title">Identity & branding</h2>
+        <p className="rs-sub">Finalise your unique digital identity on Thrico</p>
+      </div>
+
+      <div className="rd-sections">
+        {/* Logo Section */}
+        <div className="rd-section">
+          <div className="rd-section-label">
+            <Upload className="h-3.5 w-3.5" />
+            Workspace Logo <span className="rs-required">*</span>
           </div>
           <LogoUpload
             imageUrl={logoPreview}
             setImageUrl={setLogoPreview}
             setCover={setLogo}
-            buttonText="Upload Visual Asset"
+            buttonText="Upload Logo"
           />
-          <p className="text-[11px] text-slate-400 font-medium ml-1">
-            Recommended: Square image (min 200x200px) with transparent
-            background
-          </p>
-        </motion.div>
+          <p className="rd-hint">Square image, min 200×200px. Transparent background preferred.</p>
+        </div>
 
-        {/* Domain Selection Section */}
-        <motion.div variants={itemVariants} className="space-y-6">
-          <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <Link2 className="h-4 w-4 text-indigo-500" />
-            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400">
-              Permanent Subdomain
-            </h3>
+        {/* Subdomain Section */}
+        <div className="rd-section">
+          <div className="rd-section-label">
+            <Link2 className="h-3.5 w-3.5" />
+            Subdomain <span className="rs-required">*</span>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-[13px] font-bold text-slate-600 dark:text-slate-300 ml-1">
-                  Claim Subdomain *
-                </Label>
-                <Badge
-                  variant="secondary"
-                  className="bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-full border-none ring-1 ring-indigo-500/10"
-                >
-                  Fixed Identity
-                </Badge>
-              </div>
-
-              <div
-                className={cn(
-                  "flex items-center bg-white dark:bg-slate-950 p-1.5 rounded-2xl border-2 transition-all duration-300",
-                  isDomainAvailable
-                    ? "border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]"
-                    : isDomainTaken
-                      ? "border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]"
-                      : "border-slate-200 dark:border-slate-800 focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/10",
-                )}
-              >
-                <span className="text-sm font-black text-slate-300 dark:text-slate-700 pl-4 font-mono select-none">
-                  https://
-                </span>
-
-                <Input
-                  type="text"
-                  name="domain"
-                  value={values.domain}
-                  placeholder="brand-name"
-                  className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 text-xl font-black text-slate-900 dark:text-white placeholder:text-slate-200 dark:placeholder:text-slate-800 py-6"
-                  onChange={(e) => handleDomainChange(e.target.value)}
-                  onBlur={handleBlur}
-                  maxLength={63}
-                />
-
-                <span className="text-sm font-black text-indigo-500/60 dark:text-indigo-400/60 pr-4 font-mono select-none">
-                  .thrico.community
-                </span>
-              </div>
-            </div>
-
-            {/* Domain Status Indicators */}
-            <AnimatePresence mode="wait">
-              {(checkLoading || domain !== debouncedDomain) &&
-                domain.length >= 3 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="flex items-center gap-2.5 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm"
-                  >
-                    <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
-                    <span className="text-xs font-bold text-slate-500">
-                      Checking global registry...
-                    </span>
-                  </motion.div>
-                )}
-
-              {isDomainAvailable && domain === debouncedDomain && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-green-500/5 dark:bg-green-500/10 border border-green-500/20 shadow-lg shadow-green-500/5"
-                >
-                  <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-black text-green-600 dark:text-green-400 uppercase tracking-widest">
-                      Domain Available
-                    </p>
-                    <p className="text-[11px] text-green-600/70 dark:text-green-400/70 truncate font-mono mt-0.5">
-                      {fullDomain}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-
-              {isDomainTaken && domain === debouncedDomain && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="space-y-4"
-                >
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/5 dark:bg-red-500/10 border border-red-500/20 shadow-lg shadow-red-500/5">
-                    <AlertTriangle className="h-5 w-5 text-red-500 shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-black text-red-600 dark:text-red-400 uppercase tracking-widest">
-                        Subdomain Occupied
-                      </p>
-                      <p className="text-[11px] text-red-600/70 dark:text-red-400/70 truncate font-mono mt-0.5">
-                        Choose a different variant
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Suggestions List */}
-                  <div className="space-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Quick Alternatives
-                      </p>
-                      <button
-                        type="button"
-                        onClick={generateSuggestions}
-                        className="text-[10px] font-bold text-indigo-500 hover:text-indigo-600 underline"
-                      >
-                        Refresh
-                      </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {suggestions.map((suggestion) => (
-                        <button
-                          key={suggestion}
-                          type="button"
-                          onClick={() => setFieldValue("domain", suggestion)}
-                          className="px-3 py-2 text-[11px] font-black font-mono bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:bg-indigo-500 hover:text-white transition-all duration-300 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-indigo-500/20"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Error Message if local validation fails */}
-            {touched.domain && errors.domain && !checkLoading && (
-              <p className="text-[11px] text-red-500 font-bold uppercase tracking-widest ml-1 animate-pulse">
-                {errors.domain as string}
-              </p>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Agreement Section */}
-        <motion.div variants={itemVariants} className="space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <Shield className="h-4 w-4 text-indigo-500" />
-            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400">
-              Compliance & Terms
-            </h3>
-          </div>
-
+          {/* Domain input row */}
           <div
             className={cn(
-              "group/agreement flex items-start gap-4 p-5 rounded-[1.5rem] border-2 transition-all duration-300 cursor-pointer overflow-hidden relative",
-              values.agreement
-                ? "bg-indigo-500/5 border-indigo-500/20 shadow-indigo-500/5 shadow-xl"
-                : "bg-white dark:bg-slate-950 border-slate-100 dark:border-slate-800 hover:border-slate-200",
+              "rd-domain-wrap",
+              isDomainAvailable && "rd-domain-wrap--ok",
+              isDomainTaken && "rd-domain-wrap--err"
             )}
           >
-            {/* Agreement Background Glow */}
-            <div
-              className={cn(
-                "absolute inset-0 bg-indigo-500/5 opacity-0 group-hover/agreement:opacity-100 transition-opacity pointer-events-none",
-                values.agreement && "opacity-100",
-              )}
+            <span className="rd-domain-prefix">https://</span>
+            <Input
+              type="text"
+              name="domain"
+              value={values.domain}
+              placeholder="brand-name"
+              className="rd-domain-input"
+              onChange={(e) => handleDomainChange(e.target.value)}
+              onBlur={handleBlur}
+              maxLength={63}
             />
-
-            <div className="relative z-10 flex items-start gap-4">
-              <Checkbox
-                id="agreement"
-                checked={values.agreement}
-                onCheckedChange={(checked) =>
-                  setFieldValue("agreement", Boolean(checked))
-                }
-                className="w-6 h-6 rounded-lg border-2 border-slate-200 dark:border-slate-800 data-[state=checked]:bg-indigo-500 data-[state=checked]:border-indigo-500 shadow-sm transition-all"
-              />
-              <div className="space-y-1.5 min-w-0">
-                <Label
-                  htmlFor="agreement"
-                  className="text-sm font-black text-slate-800 dark:text-slate-200 cursor-pointer flex items-center gap-1.5"
-                >
-                  I'm legally authorized to register this entity
-                </Label>
-                <div className="text-[11px] font-medium text-slate-400 leading-normal">
-                  I confirm that all provided information is accurate and I
-                  agree to the{" "}
-                  <a
-                    href="https://thrico.com/privacy-policy/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-indigo-500 hover:underline font-black inline-flex items-center gap-0.5"
-                  >
-                    Privacy Policy
-                    <ExternalLink className="h-2.5 w-2.5" />
-                  </a>
-                </div>
-              </div>
-            </div>
+            <span className="rd-domain-suffix">.thrico.community</span>
           </div>
 
-          {touched.agreement && errors.agreement && (
-            <p className="ml-1 text-[11px] text-red-500 font-bold uppercase tracking-widest">
-              {errors.agreement as string}
-            </p>
+          {/* Status */}
+          {isChecking && (
+            <div className="rd-status rd-status--checking">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Checking availability…
+            </div>
           )}
-        </motion.div>
-      </motion.div>
+          {isDomainAvailable && domain === debouncedDomain && (
+            <div className="rd-status rd-status--ok">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>
+                <strong>{fullDomain}</strong> is available
+              </span>
+            </div>
+          )}
+          {isDomainTaken && domain === debouncedDomain && (
+            <>
+              <div className="rd-status rd-status--err">
+                <AlertTriangle className="h-3.5 w-3.5" />
+                This subdomain is already taken
+              </div>
+              {/* Suggestions */}
+              <div className="rd-suggestions">
+                <div className="rd-suggestions-header">
+                  <span>Try one of these</span>
+                  <button type="button" onClick={generateSuggestions} className="rd-refresh">
+                    Refresh
+                  </button>
+                </div>
+                <div className="rd-pills">
+                  {suggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setFieldValue("domain", s)}
+                      className="rd-pill"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+          {touched.domain && errors.domain && !isChecking && (
+            <p className="rs-error">{errors.domain as string}</p>
+          )}
+        </div>
+
+        {/* Agreement */}
+        <div className="rd-section">
+          <div className="rd-section-label">
+            <Shield className="h-3.5 w-3.5" />
+            Terms & Agreement
+          </div>
+          <div
+            className={cn(
+              "rd-agreement",
+              values.agreement && "rd-agreement--checked"
+            )}
+          >
+            <Checkbox
+              id="agreement"
+              checked={values.agreement}
+              onCheckedChange={(checked) => setFieldValue("agreement", Boolean(checked))}
+              className="rd-checkbox"
+            />
+            <label htmlFor="agreement" className="rd-agreement-label">
+              <span className="rd-agreement-title">
+                I am legally authorised to register this entity
+              </span>
+              <span className="rd-agreement-desc">
+                All information provided is accurate and I agree to the{" "}
+                <a
+                  href="https://thrico.com/privacy-policy/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rd-agreement-link"
+                >
+                  Privacy Policy <ExternalLink className="h-2.5 w-2.5 inline" />
+                </a>
+              </span>
+            </label>
+          </div>
+          {touched.agreement && errors.agreement && (
+            <p className="rs-error">{errors.agreement as string}</p>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        .rd-header { margin-bottom: 28px; }
+        .rs-title { font-size: 20px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px; margin: 0 0 6px; }
+        .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
+        .rs-required { color: #ef4444; }
+        .rs-error { font-size: 12px; color: #ef4444; margin: 4px 0 0; font-weight: 500; }
+
+        .rd-sections { display: flex; flex-direction: column; gap: 28px; }
+        .rd-section { display: flex; flex-direction: column; gap: 10px; }
+        .rd-section-label {
+          display: flex; align-items: center; gap: 6px;
+          font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
+          text-transform: uppercase; color: #64748b;
+          padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;
+        }
+        .rd-hint { font-size: 11px; color: #94a3b8; margin: 0; }
+
+        /* Domain input */
+        .rd-domain-wrap {
+          display: flex; align-items: center;
+          border: 1.5px solid #e2e8f0; border-radius: 12px;
+          background: #fff; overflow: hidden;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .rd-domain-wrap:focus-within {
+          border-color: #6366f1;
+          box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+        }
+        .rd-domain-wrap--ok { border-color: #10b981; }
+        .rd-domain-wrap--ok:focus-within { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.12); }
+        .rd-domain-wrap--err { border-color: #ef4444; }
+        .rd-domain-wrap--err:focus-within { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
+
+        .rd-domain-prefix, .rd-domain-suffix {
+          font-size: 13px; font-weight: 600; color: #94a3b8;
+          padding: 0 10px; white-space: nowrap; font-family: ui-monospace, monospace;
+          flex-shrink: 0;
+        }
+        .rd-domain-suffix { color: #6366f1; }
+        .rd-domain-input {
+          flex: 1 !important; border: none !important; box-shadow: none !important;
+          background: transparent !important; border-radius: 0 !important;
+          height: 46px !important; font-size: 16px !important; font-weight: 700 !important;
+          color: #0f172a !important; padding: 0 4px !important;
+          font-family: ui-monospace, monospace !important;
+          min-width: 0 !important;
+        }
+        .rd-domain-input:focus { outline: none !important; box-shadow: none !important; }
+
+        /* Status banners */
+        .rd-status {
+          display: flex; align-items: center; gap: 8px;
+          padding: 10px 14px; border-radius: 10px;
+          font-size: 13px; font-weight: 600;
+        }
+        .rd-status--checking { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+        .rd-status--ok { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .rd-status--err { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        /* Suggestions */
+        .rd-suggestions { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; }
+        .rd-suggestions-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .rd-suggestions-header span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
+        .rd-refresh { font-size: 11px; font-weight: 700; color: #6366f1; background: none; border: none; cursor: pointer; font-family: inherit; }
+        .rd-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .rd-pill {
+          padding: 6px 14px; border-radius: 8px;
+          background: #fff; border: 1px solid #e2e8f0;
+          font-size: 12px; font-weight: 600; color: #334155;
+          cursor: pointer; font-family: ui-monospace, monospace;
+          transition: background 0.12s, border-color 0.12s, color 0.12s;
+        }
+        .rd-pill:hover { background: #6366f1; border-color: #6366f1; color: #fff; }
+
+        /* Agreement */
+        .rd-agreement {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 16px; border-radius: 12px;
+          border: 1.5px solid #e2e8f0; background: #fff;
+          cursor: pointer; transition: border-color 0.15s, background 0.15s;
+        }
+        .rd-agreement--checked { border-color: #6366f1; background: #fafafe; }
+        .rd-checkbox { width: 18px !important; height: 18px !important; flex-shrink: 0; margin-top: 2px; }
+        .rd-agreement-label { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+        .rd-agreement-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+        .rd-agreement-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
+        .rd-agreement-link { color: #6366f1; font-weight: 600; text-decoration: none; }
+        .rd-agreement-link:hover { text-decoration: underline; }
+      `}</style>
     </Form>
   );
 };
 
 const RegisterEntityDomain: React.FC<RegisterEntityDomainProps> = ({
-  setCurrent,
   domain: initialDomain,
   setDomain,
   onSubmit,
@@ -434,13 +374,11 @@ const RegisterEntityDomain: React.FC<RegisterEntityDomainProps> = ({
   setLogo,
   logoPreview,
   setLogoPreview,
+  setCurrent,
 }) => {
   const initialValues = useMemo(
-    () => ({
-      domain: initialDomain || "",
-      agreement: false,
-    }),
-    [initialDomain],
+    () => ({ domain: initialDomain || "", agreement: false }),
+    [initialDomain]
   );
 
   const onFinish = (values: DomainFormData) => {
