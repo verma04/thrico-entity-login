@@ -78,8 +78,17 @@ const MyAccounts = ({ user }: WithAuthProps) => {
           },
         },
       });
+    } else {
+      window.location.href = "/login";
     }
-  }, [token]);
+  }, [token, fetchMyAccounts]);
+
+  React.useEffect(() => {
+    if (error) {
+      removeToken();
+      window.location.href = "/login";
+    }
+  }, [error, removeToken]);
 
   const accounts: Account[] = data?.getMyAccounts || [];
 
