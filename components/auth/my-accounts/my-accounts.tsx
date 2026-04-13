@@ -64,6 +64,12 @@ const MyAccounts = ({ user }: WithAuthProps) => {
   });
 
   React.useEffect(() => {
+    if (error) {
+      window.location.href = "/login";
+    }
+  }, [error]);
+
+  React.useEffect(() => {
     if (token) {
       fetchMyAccounts({
         context: {
