@@ -187,7 +187,7 @@ const MyAccounts = ({ user }: WithAuthProps) => {
 
           {!loading && accounts.length > 0 && (
             <div className="space-y-3 max-h-[320px] pt-1  overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
-              {accounts.map((account, index) => (
+              {accounts?.map((account, index) => (
                 <button
                   key={account?.id}
                   onClick={() => handleAccountSelect(account)}
@@ -225,12 +225,12 @@ const MyAccounts = ({ user }: WithAuthProps) => {
                           const { Icon } = roleDesign;
                           return (
                             <span
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-sm transition-all duration-300 ${roleDesign.textColor} ${roleDesign.bgColor} ${roleDesign.borderColor}`}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-sm transition-all duration-300 ${roleDesign?.textColor} ${roleDesign?.bgColor} ${roleDesign?.borderColor}`}
                             >
                               <Icon
-                                className={`h-3.5 w-3.5 ${roleDesign.iconColor} group-hover:scale-110 transition-transform duration-300`}
+                                className={`h-3.5 w-3.5 ${roleDesign?.iconColor} group-hover:scale-110 transition-transform duration-300`}
                               />
-                              {roleDesign.label}
+                              {roleDesign?.label}
                             </span>
                           );
                         })()}
