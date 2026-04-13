@@ -1,14 +1,15 @@
-import React, { Suspense } from "react";
+"use client";
 
-import { Metadata } from "next";
-import Login from "@/components/auth/login/login";
+import React from "react";
+import dynamic from "next/dynamic";
 
-export const metadata: Metadata = {
-  title: "Welcome - Thrico",
-  description: "",
+const MyAccounts = dynamic(
+  () => import("@/components/auth/my-accounts/my-accounts"),
+  { ssr: false },
+);
+
+const MyAccountsPage = () => {
+  return <MyAccounts />;
 };
-const page = () => {
-  return <Login />;
-};
 
-export default page;
+export default MyAccountsPage;
