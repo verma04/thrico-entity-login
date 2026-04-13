@@ -24,13 +24,13 @@ export function withAuth<T extends WithAuthProps>(
       fetchPolicy: "network-only",
     });
 
-    // useEffect(() => {
-    //   if (!loading) {
-    //     if (error || !data || !data.getLoginUserDetails) {
-    //       router.push("/login");
-    //     }
-    //   }
-    // }, [loading, data, error, router]);
+    useEffect(() => {
+      if (!loading) {
+        if (error || !data || !data.getLoginUserDetails) {
+          router.push("/login");
+        }
+      }
+    }, [loading, data, error, router]);
 
     if (loading) {
       return (
