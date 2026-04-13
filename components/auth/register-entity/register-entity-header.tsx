@@ -19,7 +19,7 @@ const RegisterEntityHeader = () => {
           <div className="re-header-brand">
             <ThricoLogo />
             <span className="re-header-divider" />
-            <span className="re-header-title">Entity Setup</span>
+            <span className="re-header-title">Entity</span>
           </div>
 
           {current > 0 && (

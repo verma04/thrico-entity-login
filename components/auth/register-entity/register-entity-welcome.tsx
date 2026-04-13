@@ -13,22 +13,22 @@ const features = [
     icon: Users,
     color: "#6366f1",
     bg: "rgba(99,102,241,0.08)",
-    title: "Community-first",
-    desc: "Engage, grow, and retain your members with powerful community tools.",
+    title: "Gamification",
+    desc: "Gamify your content, community & commerce",
   },
   {
     icon: Globe,
     color: "#06b6d4",
     bg: "rgba(6,182,212,0.08)",
-    title: "Global reach",
-    desc: "Localised experiences with 180+ country support and multi-language.",
+    title: "Community",
+    desc: "Build a community led brand",
   },
   {
     icon: Zap,
     color: "#f59e0b",
     bg: "rgba(245,158,11,0.08)",
-    title: "Everything built-in",
-    desc: "Events, forums, marketplace, analytics — one platform, zero plugins.",
+    title: "Data Led",
+    desc: "Build a data driven business model",
   },
 ];
 
@@ -37,30 +37,40 @@ const RegisterEntityWelcome = ({ onStart }: RegisterEntityWelcomeProps) => {
     <div className="rw-root">
       <div className="rw-card">
         {/* Eyebrow */}
-        <p className="rw-eyebrow">Entity Registration</p>
+        <p className="rw-eyebrow">Modern Community Operating System</p>
 
         {/* Headline */}
-        <h1 className="rw-headline">
-          Your community platform,
+        <h1 className="rw-headline" style={{ color: "#ef4444" }}>
+          Build Thriving
           <br />
-          <span className="rw-accent">set up in minutes.</span>
+          Communities
         </h1>
 
         {/* Sub */}
         <p className="rw-sub">
-          A short onboarding to configure your workspace. It takes under 3 minutes.
+          The most comprehensive platform to create run and manage your social media community universe.
         </p>
 
         {/* CTA */}
-        <Button
-          id="start-registration-btn"
-          size="lg"
-          onClick={onStart}
-          className="rw-btn"
-        >
-          Get started
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button
+            id="start-registration-btn"
+            size="lg"
+            onClick={onStart}
+            className="rw-btn"
+          >
+            Start Registration
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+          <a
+            href="https://thrico.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors"
+          >
+            Learn More
+          </a>
+        </div>
 
         {/* Divider */}
         <div className="rw-divider" />

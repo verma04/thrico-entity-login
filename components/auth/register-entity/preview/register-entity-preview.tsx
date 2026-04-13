@@ -79,7 +79,7 @@ const RegisterEntityPreview = () => {
               <div className="flex items-center justify-center gap-2 mt-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                 <span className="text-xs font-black uppercase tracking-widest text-primary/80">
-                  {domain ? `${domain}.thrico.network` : "awaiting domain..."}
+                  {domain ? `${domain}.thrico.network` : "Build Thriving Communities"}
                 </span>
               </div>
             </div>
@@ -92,7 +92,7 @@ const RegisterEntityPreview = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-1 rounded bg-slate-100 dark:bg-slate-800"><Layers className="h-3 w-3 text-slate-400" /></div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Structural Setup</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Setup</span>
                 </div>
                 {isEntityComplete && (
                   <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-0 text-[10px] font-black px-2 py-0.5">VERIFIED</Badge>
@@ -120,7 +120,7 @@ const RegisterEntityPreview = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-1 rounded bg-slate-100 dark:bg-slate-800"><User className="h-3 w-3 text-slate-400" /></div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Leadership Profile</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Role</span>
                 </div>
               </div>
 
@@ -136,7 +136,7 @@ const RegisterEntityPreview = () => {
                     {profile.designation || "Administrator"}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">
-                    {profile.phone ? `${profile.phone.code} ${profile.phone.phone}` : "Encrypted Channel"}
+                    {profile.phone ? `${profile.phone.code} ${profile.phone.phone}` : "Role"}
                   </p>
                 </div>
               </div>
@@ -162,26 +162,6 @@ const RegisterEntityPreview = () => {
             </div>
           </div>
 
-          {/* Premium Footer Status */}
-          <div className="px-8 py-6 bg-slate-900 text-white flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-9 h-9 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center overflow-hidden">
-                    <div className="w-full h-full bg-slate-700 animate-pulse" />
-                  </div>
-                ))}
-              </div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Genesis Node <br/> <span className="text-white">Active</span></p>
-            </div>
-            <motion.div 
-              whileHover={{ x: 5 }}
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer flex items-center gap-2"
-            >
-              <span className="text-[10px] font-black tracking-widest uppercase">Inspect</span>
-              <ExternalLink className="h-3 w-3" />
-            </motion.div>
-          </div>
         </div>
 
         {/* Floating Rank Badge */}
@@ -192,8 +172,7 @@ const RegisterEntityPreview = () => {
           className="absolute -top-5 -right-5 h-14 w-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-2xl border border-slate-100 dark:border-slate-700 z-20 cursor-help"
         >
           <div className="text-center">
-            <p className="text-[8px] font-black text-slate-400 uppercase leading-none">Status</p>
-            <p className="text-xs font-black text-primary uppercase">Elite</p>
+            <p className="text-xs font-black text-primary uppercase">Preview</p>
           </div>
         </motion.div>
       </div>

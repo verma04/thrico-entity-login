@@ -91,7 +91,6 @@ const RegisterEntityPreferences: React.FC<RegisterEntityPreferencesProps> = ({
 
           <div className="rs-header">
             <h2 className="rs-title">Regional settings</h2>
-            <p className="rs-sub">Your primary region and language for the workspace</p>
           </div>
 
           <div className="rs-fields">

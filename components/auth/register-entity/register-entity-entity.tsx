@@ -50,11 +50,11 @@ const FormikStepSync = ({ step }: { step: number }) => {
 };
 
 const entityTypes = [
-  { value: "academia", label: "Academia", description: "Educational Institution" },
-  { value: "enterprise", label: "Enterprise", description: "Large Business" },
-  { value: "creator", label: "Creator", description: "Content Creator" },
-  { value: "association", label: "Association", description: "Non-profit / Group" },
-  { value: "startup", label: "Startup", description: "Early-stage Company" },
+  { value: "startup", label: "Startup / SME", description: "e.g. d2c brand, small & medium business" },
+  { value: "enterprise", label: "Enterprise", description: "e.g. large company with presence in multiple locations" },
+  { value: "association", label: "Association", description: "e.g. for profit/ non profit group of people" },
+  { value: "creator", label: "Creator", description: "e.g. influencer, celebrity, content creator" },
+  { value: "academia", label: "Academia", description: "e.g. educational institutions, colleges, universities" },
 ];
 
 const industryTypes = [

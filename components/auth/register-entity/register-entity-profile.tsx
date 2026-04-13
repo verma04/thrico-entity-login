@@ -76,8 +76,8 @@ const RegisterEntityProfile: React.FC<RegisterEntityProfileProps> = ({
       email: data?.email || "",
       designation: profile?.designation || "",
       phone: profile?.phone?.phone || "",
-      phoneCode: profile?.phone?.code || "+1",
-      phoneIsoCode: profile?.phone?.isoCode || "US",
+      phoneCode: profile?.phone?.code || "+91",
+      phoneIsoCode: profile?.phone?.isoCode || "IN",
     }),
     [data, profile],
   );
@@ -109,7 +109,6 @@ const RegisterEntityProfile: React.FC<RegisterEntityProfileProps> = ({
           {/* Step header */}
           <div className="rs-header">
             <h2 className="rs-title">Profile details</h2>
-            <p className="rs-sub">Your professional identity on Thrico</p>
           </div>
 
           <div className="rs-fields">
