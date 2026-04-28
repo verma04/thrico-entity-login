@@ -43,7 +43,7 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
   };
 
   const isFormValid = stepValidity[current] ?? true;
-  const isLastStep = current === 5;
+  const isLastStep = current === 6;
   const label = submitText ?? (isLastStep ? "Complete Setup" : "Continue");
 
   return (
@@ -55,7 +55,7 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
         className="re-footer-back"
         id="step-back-btn"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="h-3.5 w-3.5" />
         Back
       </button>
 
@@ -74,7 +74,7 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
         ) : (
           <>
             {label}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </>
         )}
       </button>
@@ -84,18 +84,18 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 32px 20px;
+          padding: 14px 28px 18px;
           border-top: 1px solid #f1f5f9;
-          background: #fafafa;
+          background: #fafbff;
         }
         .re-footer-back {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          height: 40px;
+          height: 38px;
           padding: 0 16px;
           border-radius: 10px;
-          font-size: 14px;
+          font-size: 13.5px;
           font-weight: 600;
           color: #64748b;
           background: transparent;
@@ -107,43 +107,56 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
         .re-footer-back:hover {
           background: #f8fafc;
           color: #0f172a;
-          border-color: #cbd5e1;
+          border-color: #c7d2fe;
         }
         .re-footer-back:disabled {
-          opacity: 0.5;
+          opacity: 0.35;
           cursor: not-allowed;
         }
         .re-footer-next {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          height: 40px;
+          gap: 7px;
+          height: 38px;
           padding: 0 22px;
           border-radius: 10px;
-          font-size: 14px;
+          font-size: 13.5px;
           font-weight: 700;
           color: #fff;
-          background: #0f172a;
+          background: linear-gradient(135deg, #fd5531, #0d63f4);
           border: none;
           cursor: pointer;
-          transition: background 0.15s, transform 0.12s, opacity 0.15s;
+          transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
           font-family: inherit;
+          box-shadow: 0 4px 16px rgba(253,85,49,0.25);
+          position: relative;
+          overflow: hidden;
+        }
+        .re-footer-next::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.12));
+          opacity: 0;
+          transition: opacity 0.2s;
         }
         .re-footer-next:hover:not(:disabled) {
-          background: #1e293b;
           transform: translateY(-1px);
+          box-shadow: 0 6px 24px rgba(99,102,241,0.45);
         }
+        .re-footer-next:hover:not(:disabled)::after { opacity: 1; }
         .re-footer-next:active:not(:disabled) {
-          transform: scale(0.98);
+          transform: scale(0.97);
         }
         .re-footer-next--disabled,
         .re-footer-next:disabled {
-          opacity: 0.4;
+          opacity: 0.3;
           cursor: not-allowed;
           transform: none;
+          box-shadow: none;
         }
         @media (max-width: 480px) {
-          .re-footer { padding: 14px 20px 16px; }
+          .re-footer { padding: 12px 18px 16px; }
         }
       `}</style>
     </div>

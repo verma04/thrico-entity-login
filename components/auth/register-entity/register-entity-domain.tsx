@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { useRegisterEntityFormStore } from "@/components/store/registerEntityStore";
 import { useCheckDomain } from "@/components/graphql/actions";
 import { generateSlug } from "random-word-slugs";
-import LogoUpload from "./register-entity-logo-upload";
 
 interface DomainFormData {
   domain: string;
@@ -32,10 +31,6 @@ interface RegisterEntityDomainProps {
   setDomain: (domain: string) => void;
   onSubmit: (values: DomainFormData) => void;
   loading: boolean;
-  logo: any;
-  setLogo: (logo: any) => void;
-  logoPreview: string;
-  setLogoPreview: (url: string) => void;
 }
 
 const validationSchema = Yup.object().shape({
@@ -49,19 +44,17 @@ const validationSchema = Yup.object().shape({
 const FormikStepSync = ({
   step,
   isDomainAvailable,
-  isLogoUploaded,
 }: {
   step: number;
   isDomainAvailable: boolean;
-  isLogoUploaded: boolean;
 }) => {
   const { isValid, values, handleSubmit } = useFormikContext<DomainFormData>();
   const { setStepValidity, setSubmitHandler, setDomain, setOrganization } =
     useRegisterEntityFormStore();
 
   React.useEffect(() => {
-    setStepValidity(step, isValid && isDomainAvailable && isLogoUploaded);
-  }, [isValid, isDomainAvailable, isLogoUploaded, step, setStepValidity]);
+    setStepValidity(step, isValid && isDomainAvailable);
+  }, [isValid, isDomainAvailable, step, setStepValidity]);
 
   React.useEffect(() => {
     setDomain(values.domain);
@@ -78,11 +71,7 @@ const FormikStepSync = ({
   return null;
 };
 
-const DomainFormContent: React.FC<{
-  logoPreview: string;
-  setLogoPreview: (url: string) => void;
-  setLogo: (logo: any) => void;
-}> = ({ logoPreview, setLogoPreview, setLogo }) => {
+const DomainFormContent: React.FC = () => {
   const { values, errors, touched, setFieldValue, handleBlur } =
     useFormikContext<DomainFormData>();
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -127,9 +116,8 @@ const DomainFormContent: React.FC<{
   return (
     <Form className="w-full">
       <FormikStepSync
-        step={5}
+        step={6}
         isDomainAvailable={isDomainAvailable === true}
-        isLogoUploaded={!!logoPreview}
       />
 
       <div className="rd-header">
@@ -138,20 +126,6 @@ const DomainFormContent: React.FC<{
       </div>
 
       <div className="rd-sections">
-        {/* Logo Section */}
-        <div className="rd-section">
-          <div className="rd-section-label">
-            <Upload className="h-3.5 w-3.5" />
-            Workspace Logo <span className="rs-required">*</span>
-          </div>
-          <LogoUpload
-            imageUrl={logoPreview}
-            setImageUrl={setLogoPreview}
-            setCover={setLogo}
-            buttonText="Upload Logo"
-          />
-          <p className="rd-hint">Square image, min 200×200px. Transparent background preferred.</p>
-        </div>
 
         {/* Subdomain Section */}
         <div className="rd-section">
@@ -394,11 +368,7 @@ const RegisterEntityDomain: React.FC<RegisterEntityDomainProps> = ({
       enableReinitialize
       validateOnMount
     >
-      <DomainFormContent
-        logoPreview={logoPreview}
-        setLogoPreview={setLogoPreview}
-        setLogo={setLogo}
-      />
+      <DomainFormContent />
     </Formik>
   );
 };
