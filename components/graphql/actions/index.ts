@@ -29,7 +29,7 @@ export const useLoginAsAdmin = (options?: MutationHookOptions<any, any>) =>
 export const useOtpLogin = (options?: MutationHookOptions<any, any>) =>
   useMutation(VERIFY_OTP, options);
 
-export const useLogoutUser = (options?: MutationHookOptions<any, any>) =>
+export const useLogoutAdmin = (options?: MutationHookOptions<any, any>) =>
   useMutation(LOGOUT, options);
 
 export const useGetMyAccounts = (options?: LazyQueryHookOptions<any, any>) =>

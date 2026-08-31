@@ -5,14 +5,14 @@ import React, { useEffect } from "react";
 
 import { useRouter } from "next/navigation";
 import { useTokenStore } from "@/components/store/store";
-import { useLogoutUser } from "@/components/graphql/actions";
+import { useLogoutAdmin } from "@/components/graphql/actions";
 import { toast } from "sonner";
 
 const Page = () => {
   const router = useRouter();
 
   const removeToken = useTokenStore((state) => state.removeToken);
-  const [logout] = useLogoutUser({
+  const [logout] = useLogoutAdmin({
     onCompleted() {
       toast.success("Logout Success", {
         id: "12",

@@ -35,7 +35,7 @@ export function ApolloWrapper({ children, host }: ApolloWrapperProps) {
     });
 
     const httpLink = new HttpLink({
-      uri: host || "https://admin.thrico.app/graphql",
+      uri: host || process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:1111/graphql",
     });
     const link = errorControl.concat(httpLink);
 

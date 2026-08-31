@@ -4,37 +4,33 @@ import React from "react";
 import AuthLayout from "../layout/auth-layout";
 import Link from "next/link";
 import SignupForm from "./form";
-import { ArrowRight } from "lucide-react";
 
 const SignUp = () => {
   return (
     <AuthLayout>
-      <div className="w-full space-y-6">
-        {/* Header with animation */}
-        <div className="text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Join Thrico
+      <div className="w-full">
+        {/* Header (scaled down 20%) */}
+        <div className="mb-4 text-left">
+          <h1 className="text-[21px] sm:text-[22px] font-bold tracking-tight text-gray-900 leading-tight">
+            Create an account
           </h1>
-          <p className="text-muted-foreground text-sm">
-            Create your account and start building your community
+          <p className="text-[12.5px] text-gray-500 font-normal mt-0.5">
+            Get started with Thrico
           </p>
         </div>
 
-        {/* Form with staggered animation */}
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-          <SignupForm />
-        </div>
+        {/* Signup Form */}
+        <SignupForm />
 
         {/* Login link */}
-        <div className="text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-4 pt-1 text-left">
+          <p className="text-[12.5px] text-gray-700">
             Already have an account?{" "}
             <Link
-              href="/"
-              className="font-medium text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 group"
+              href="/login"
+              className="text-[#005bd3] hover:underline font-medium inline-flex items-center gap-0.5"
             >
-              Sign in
-              <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              Sign in <span aria-hidden="true">→</span>
             </Link>
           </p>
         </div>
@@ -44,4 +40,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-

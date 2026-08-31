@@ -95,7 +95,7 @@ export const useRegisterEntityFormStore = create<RegisterEntityFormStore>(
     setDomain: (domain) => set({ domain }),
     logo: null,
     setLogo: (logo) => set({ logo }),
-    logoPreview: "https://cdn.thrico.network/thrico_logo.png",
+    logoPreview: `${process.env.NEXT_PUBLIC_CDN_URL}/thrico_logo.png`,
     setLogoPreview: (logoPreview) => set({ logoPreview }),
     stepValidity: {},
     setStepValidity: (step, isValid) =>

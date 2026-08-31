@@ -6,9 +6,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useRegisterAsAdmin } from "../../graphql/actions";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 
 type SignupFormValues = {
   email: string;
@@ -18,7 +16,7 @@ type SignupFormValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string()
-    .email("The input is not valid E-mail!")
+    .email("Please enter a valid email address")
     .required("Email is required"),
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
@@ -33,6 +31,9 @@ const SignupForm = () => {
         "User successfully registered. Please proceed to login to continue."
       );
       router.push("/login");
+    },
+    onError(err) {
+      toast.error(err.message || "Failed to create account. Please try again.");
     },
   });
 
@@ -55,87 +56,101 @@ const SignupForm = () => {
       onSubmit={handleSubmit}
     >
       {({ errors, touched }) => (
-        <Form className="w-full">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email
-              </Label>
+        <Form className="w-full space-y-3">
+          {/* Email */}
+          <div className="space-y-1">
+            <label
+              htmlFor="email"
+              className="text-[12px] font-medium text-gray-700 block"
+            >
+              Email
+            </label>
+            <Field
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder=""
+              className={`w-full h-9 px-3 rounded-md border text-[13px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 ${
+                errors.email && touched.email
+                  ? "border-red-500 focus:ring-1 focus:ring-red-500"
+                  : "border-gray-300 focus:border-black focus:ring-1 focus:ring-black"
+              }`}
+            />
+            {errors.email && touched.email && (
+              <p className="text-[11px] font-medium text-red-600 mt-1">
+                {errors.email}
+              </p>
+            )}
+          </div>
+
+          {/* First & Last Name */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="space-y-1">
+              <label
+                htmlFor="firstName"
+                className="text-[12px] font-medium text-gray-700 block"
+              >
+                First name
+              </label>
               <Field
-                as={Input}
-                id="email"
-                name="email"
-                type="email"
-                placeholder="your@email.com"
-                className={`transition-all duration-200 ${
-                  errors.email && touched.email
-                    ? "border-destructive focus-visible:ring-destructive/20"
-                    : "focus-visible:ring-primary/20"
+                id="firstName"
+                name="firstName"
+                placeholder=""
+                className={`w-full h-9 px-3 rounded-md border text-[13px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 ${
+                  errors.firstName && touched.firstName
+                    ? "border-red-500 focus:ring-1 focus:ring-red-500"
+                    : "border-gray-300 focus:border-black focus:ring-1 focus:ring-black"
                 }`}
               />
-              {errors.email && touched.email && (
-                <p className="text-sm font-medium text-destructive animate-in slide-in-from-top-1 duration-200">
-                  {errors.email}
+              {errors.firstName && touched.firstName && (
+                <p className="text-[11px] font-medium text-red-600 mt-1">
+                  {errors.firstName}
                 </p>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-medium">
-                  First Name
-                </Label>
-                <Field
-                  as={Input}
-                  id="firstName"
-                  name="firstName"
-                  placeholder="John"
-                  className={`transition-all duration-200 ${
-                    errors.firstName && touched.firstName
-                      ? "border-destructive focus-visible:ring-destructive/20"
-                      : "focus-visible:ring-primary/20"
-                  }`}
-                />
-                {errors.firstName && touched.firstName && (
-                  <p className="text-sm font-medium text-destructive">
-                    {errors.firstName}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-medium">
-                  Last Name
-                </Label>
-                <Field
-                  as={Input}
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Doe"
-                  className={`transition-all duration-200 ${
-                    errors.lastName && touched.lastName
-                      ? "border-destructive focus-visible:ring-destructive/20"
-                      : "focus-visible:ring-primary/20"
-                  }`}
-                />
-                {errors.lastName && touched.lastName && (
-                  <p className="text-sm font-medium text-destructive">
-                    {errors.lastName}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <Button
-                type="submit"
-                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
-                loading={loading}
-                size="lg"
+            <div className="space-y-1">
+              <label
+                htmlFor="lastName"
+                className="text-[12px] font-medium text-gray-700 block"
               >
-                {loading ? "Creating account..." : "Create Account"}
-              </Button>
+                Last name
+              </label>
+              <Field
+                id="lastName"
+                name="lastName"
+                placeholder=""
+                className={`w-full h-9 px-3 rounded-md border text-[13px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 ${
+                  errors.lastName && touched.lastName
+                    ? "border-red-500 focus:ring-1 focus:ring-red-500"
+                    : "border-gray-300 focus:border-black focus:ring-1 focus:ring-black"
+                }`}
+              />
+              {errors.lastName && touched.lastName && (
+                <p className="text-[11px] font-medium text-red-600 mt-1">
+                  {errors.lastName}
+                </p>
+              )}
             </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-1">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-9 bg-[#1a1a1a] hover:bg-[#303030] active:bg-[#000000] disabled:bg-gray-400 text-white font-medium text-[13px] rounded-md transition-colors duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed shadow-xs"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                  <span>Creating account...</span>
+                </>
+              ) : (
+                "Create account"
+              )}
+            </button>
           </div>
         </Form>
       )}

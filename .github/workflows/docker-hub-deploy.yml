@@ -39,12 +39,19 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "NEXT_PUBLIC_DASHBOARD_URL=${{ secrets.NEXT_PUBLIC_DASHBOARD_URL }}" >> .env
+          echo "NEXT_PUBLIC_GRAPHQL_URL=${{ secrets.NEXT_PUBLIC_GRAPHQL_URL }}" >> .env
+          echo "NEXT_PUBLIC_CDN_URL=${{ secrets.NEXT_PUBLIC_CDN_URL }}" >> .env
+          # Add any other secrets to .env here if needed
+
       - name: Build entity-login via docker-compose
         working-directory: .
         run: |
           pnpm install --frozen-lockfile
           docker-compose build thrico-entity-login
-         
 
       - name: List Docker images (for debug)
         run: docker images

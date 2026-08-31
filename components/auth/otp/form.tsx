@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useOtpLogin } from "../../graphql/actions";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useTokenStore } from "../../store/store";
+import { Loader2 } from "lucide-react";
 
 const validationSchema = Yup.object({
   otp: Yup.string()
@@ -28,16 +27,15 @@ const OtpForm = () => {
 
   const [login, { loading }] = useOtpLogin({
     async onCompleted(data: any) {
-      console.log("OTP Login Response:", data);
       const token = data?.otpLogin?.token;
       if (token) {
-        // Save token to localStorage via Zustand store
         await storeToken(token);
-        toast.success("Login Success");
-
-        // Redirect to My Accounts page
+        toast.success("Login Successful");
         router.push("/my-accounts");
       }
+    },
+    onError(err) {
+      toast.error(err.message || "Invalid OTP code. Please try again.");
     },
   });
 
@@ -65,12 +63,12 @@ const OtpForm = () => {
           <Form className="w-full">
             <div className="flex flex-col items-center space-y-6">
               <div className="space-y-3 w-full flex flex-col items-center">
-                <Label
+                <label
                   htmlFor="otp"
-                  className="text-sm font-medium text-center"
+                  className="text-[13px] font-medium text-gray-700 text-center block"
                 >
                   Verification Code
-                </Label>
+                </label>
                 <InputOTP
                   maxLength={4}
                   value={values.otp}
@@ -78,29 +76,46 @@ const OtpForm = () => {
                   className="gap-3"
                 >
                   <InputOTPGroup className="gap-3">
-                    <InputOTPSlot index={0} className="w-12 h-12 text-lg" />
-                    <InputOTPSlot index={1} className="w-12 h-12 text-lg" />
-                    <InputOTPSlot index={2} className="w-12 h-12 text-lg" />
-                    <InputOTPSlot index={3} className="w-12 h-12 text-lg" />
+                    <InputOTPSlot
+                      index={0}
+                      className="w-12 h-12 text-lg font-semibold rounded-lg border-gray-300 focus:border-black focus:ring-1 focus:ring-black bg-white text-gray-900"
+                    />
+                    <InputOTPSlot
+                      index={1}
+                      className="w-12 h-12 text-lg font-semibold rounded-lg border-gray-300 focus:border-black focus:ring-1 focus:ring-black bg-white text-gray-900"
+                    />
+                    <InputOTPSlot
+                      index={2}
+                      className="w-12 h-12 text-lg font-semibold rounded-lg border-gray-300 focus:border-black focus:ring-1 focus:ring-black bg-white text-gray-900"
+                    />
+                    <InputOTPSlot
+                      index={3}
+                      className="w-12 h-12 text-lg font-semibold rounded-lg border-gray-300 focus:border-black focus:ring-1 focus:ring-black bg-white text-gray-900"
+                    />
                   </InputOTPGroup>
                 </InputOTP>
                 {errors.otp && touched.otp && (
-                  <p className="text-sm font-medium text-destructive text-center animate-in slide-in-from-top-1 duration-200">
+                  <p className="text-xs font-medium text-red-600 text-center mt-1">
                     {errors.otp}
                   </p>
                 )}
               </div>
 
-              <div className="w-full max-w-xs">
-                <Button
+              <div className="w-full">
+                <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                  loading={loading}
-                  disabled={!isOtpComplete}
-                  size="lg"
+                  disabled={loading || !isOtpComplete}
+                  className="w-full h-11 bg-[#1a1a1a] hover:bg-[#303030] active:bg-[#000000] disabled:bg-gray-300 text-white font-medium text-sm rounded-lg transition-colors duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed shadow-xs"
                 >
-                  {loading ? "Verifying..." : "Verify Code"}
-                </Button>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    "Verify code"
+                  )}
+                </button>
               </div>
             </div>
           </Form>

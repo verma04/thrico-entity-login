@@ -26,8 +26,8 @@ export const VERIFY_OTP = gql`
 `;
 
 export const LOGOUT = gql`
-  mutation LogoutUser {
-    logoutUser {
+  mutation LogoutAdmin {
+    logoutAdmin {
       success
     }
   }
