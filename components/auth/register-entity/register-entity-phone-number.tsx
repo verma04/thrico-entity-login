@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { useFormikContext } from "formik";
-import { Phone, Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PhoneNumberProps {
@@ -133,33 +132,31 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
   const phoneError = touched?.phone && errors?.phone;
 
   return (
-    <div className="space-y-2">
-      <Label className="text-[13px] font-bold uppercase tracking-widest text-slate-400 ml-1">
-        Phone Number
-      </Label>
-      <div className="flex gap-3">
+    <div className="space-y-1">
+      <div className="flex gap-2">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
+              type="button"
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="h-14 w-[110px] justify-between rounded-[1.25rem] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 transition-all hover:bg-slate-50 dark:hover:bg-slate-900"
+              className="h-10 w-[105px] shrink-0 justify-between rounded-md border border-gray-300 bg-white px-3 text-[13.5px] font-normal text-gray-800 transition-all hover:bg-gray-50 focus:border-black focus:ring-1 focus:ring-black"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{selectedCountry.flag}</span>
-                <span className="font-bold text-sm text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-base shrink-0">{selectedCountry.flag}</span>
+                <span className="text-[13px] font-medium text-gray-700 truncate">
                   {selectedCountry.code}
                 </span>
               </div>
-              <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+              <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 opacity-40" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[300px] p-0 rounded-2xl shadow-2xl border-slate-200 dark:border-slate-800" align="start">
+          <PopoverContent className="w-[300px] p-0 rounded-lg shadow-lg border border-gray-200" align="start">
             <Command>
-              <CommandInput placeholder="Search country..." className="h-12 border-none focus:ring-0" />
-              <CommandList className="max-h-[300px]">
-                <CommandEmpty className="py-6 text-center text-sm text-slate-500">No country found.</CommandEmpty>
+              <CommandInput placeholder="Search country..." className="h-9 text-[13px] border-none focus:ring-0" />
+              <CommandList className="max-h-[250px]">
+                <CommandEmpty className="py-4 text-center text-xs text-gray-500">No country found.</CommandEmpty>
                 <CommandGroup>
                   {countryCodes.map((country) => (
                     <CommandItem
@@ -169,19 +166,17 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
                         setCountryCode(country.code);
                         setOpen(false);
                       }}
-                      className="flex items-center gap-3 p-3 rounded-xl m-1 transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-md transition-colors cursor-pointer"
                     >
                       <div className={cn(
-                        "flex h-4 w-4 items-center justify-center rounded-full border border-primary/20 transition-all",
-                        countryCode === country.code ? "bg-primary border-primary" : "opacity-0"
+                        "flex h-3.5 w-3.5 items-center justify-center rounded-full border border-gray-300 transition-all",
+                        countryCode === country.code ? "bg-black border-black" : "opacity-0"
                       )}>
-                        {countryCode === country.code && <Check className="h-3 w-3 text-white" />}
+                        {countryCode === country.code && <Check className="h-2.5 w-2.5 text-white" />}
                       </div>
-                      <span className="text-lg">{country.flag}</span>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{country.name}</span>
-                      </div>
-                      <span className="ml-auto font-mono text-xs font-black text-slate-400">
+                      <span className="text-base">{country.flag}</span>
+                      <span className="text-gray-800 flex-1 truncate">{country.name}</span>
+                      <span className="text-xs text-gray-400 font-mono">
                         {country.code}
                       </span>
                     </CommandItem>
@@ -192,9 +187,10 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
           </PopoverContent>
         </Popover>
 
-        <div className="relative flex-1 group/input">
+        <div className="relative flex-1">
           <Input
             name="phone"
+            type="tel"
             placeholder="123 456 7890"
             value={phoneValue}
             onChange={(e) => {
@@ -203,22 +199,18 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
             }}
             onBlur={handleBlur}
             className={cn(
-              "h-14 pl-12 rounded-[1.25rem] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm font-medium",
-              phoneError && "border-destructive focus:ring-destructive/10"
+              "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+              phoneError && "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}
             maxLength={15}
           />
-          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
         </div>
       </div>
       {phoneError && (
-        <p className="ml-1 text-[12px] text-destructive font-medium">
+        <p className="text-[11.5px] font-medium text-red-600 mt-1">
           {phoneError as string}
         </p>
       )}
-      <p className="text-[11px] text-slate-400 ml-1">
-        Full number: <span className="font-bold text-primary">{countryCode} {phoneValue || "___ ___ ____"}</span>
-      </p>
     </div>
   );
 };

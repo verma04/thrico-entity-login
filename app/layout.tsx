@@ -1,4 +1,5 @@
 import {
+  Figtree,
   Space_Grotesk,
   Inter,
   Playfair_Display,
@@ -8,6 +9,12 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import { ApolloWrapper } from "@/components/hoc/apollo-wrapper";
+
+const figtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-figtree",
+  display: "swap",
+});
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -107,7 +114,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${playfair.variable} ${outfit.variable} font-sans`}
+        className={`${figtree.variable} ${spaceGrotesk.variable} ${inter.variable} ${playfair.variable} ${outfit.variable} font-sans`}
       >
         <ApolloWrapper
           host={

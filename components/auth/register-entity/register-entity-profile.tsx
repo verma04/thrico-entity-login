@@ -3,9 +3,7 @@
 import React, { useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { User, Mail, Briefcase } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import PhoneNumber from "./register-entity-phone-number";
 import { cn } from "@/lib/utils";
 import { useRegisterEntityFormStore } from "@/components/store/registerEntityStore";
@@ -103,164 +101,73 @@ const RegisterEntityProfile: React.FC<RegisterEntityProfileProps> = ({
       validateOnMount
     >
       {({ values, errors, touched, handleBlur, handleChange }) => (
-        <Form className="w-full">
+        <Form className="w-full space-y-4">
           <FormikStepSync step={1} />
 
-          {/* Step header */}
-          <div className="rs-header">
-            <h2 className="rs-title">Profile details</h2>
-          </div>
-
-          <div className="rs-fields">
-            {/* Read-only fields */}
-            <div className="rs-row rs-row--2">
-              <div className="rs-field">
-                <Label className="rs-label">Full Name</Label>
-                <div className="rs-input-wrap">
-                  <Input
-                    name="fullName"
-                    value={values.fullName}
-                    onChange={handleChange}
-                    readOnly
-                    className="rs-input rs-input--readonly"
-                  />
-                  <User className="rs-icon" />
-                </div>
-                <p className="rs-hint">From your Thrico account</p>
-              </div>
-              <div className="rs-field">
-                <Label className="rs-label">Work Email</Label>
-                <div className="rs-input-wrap">
-                  <Input
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    readOnly
-                    className="rs-input rs-input--readonly"
-                  />
-                  <Mail className="rs-icon" />
-                </div>
-              </div>
-            </div>
-
-            {/* Editable fields */}
-            <div className="rs-field">
-              <Label className="rs-label">Phone Number <span className="rs-required">*</span></Label>
-              <PhoneNumber
-                isFormik
-                initialValue={initialValues.phone}
-                initialCountryCode={initialValues.phoneCode}
+          {/* Full Name & Work Email */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-gray-700 block">
+                Full name
+              </label>
+              <Input
+                name="fullName"
+                value={values.fullName}
+                readOnly
+                disabled
+                className="w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-600 bg-gray-50 border-gray-200 cursor-not-allowed"
               />
             </div>
 
-            <div className="rs-field">
-              <Label className="rs-label">
-                Designation <span className="rs-required">*</span>
-              </Label>
-              <div className="rs-input-wrap">
-                <Input
-                  name="designation"
-                  placeholder="e.g. Chief Executive Officer"
-                  value={values.designation}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={cn(
-                    "rs-input",
-                    touched.designation && errors.designation && "rs-input--error",
-                  )}
-                />
-                <Briefcase className="rs-icon" />
-              </div>
-              {touched.designation && errors.designation && (
-                <p className="rs-error">{errors.designation}</p>
-              )}
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-gray-700 block">
+                Work email
+              </label>
+              <Input
+                name="email"
+                value={values.email}
+                readOnly
+                disabled
+                className="w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-600 bg-gray-50 border-gray-200 cursor-not-allowed"
+              />
             </div>
           </div>
 
-          <style>{`
-            .rs-header { margin-bottom: 28px; }
-            .rs-title {
-              font-size: 20px;
-              font-weight: 800;
-              color: #0f172a;
-              letter-spacing: -0.4px;
-              margin: 0 0 6px;
-            }
-            .rs-sub {
-              font-size: 14px;
-              color: #64748b;
-              margin: 0;
-            }
-            .rs-fields {
-              display: flex;
-              flex-direction: column;
-              gap: 20px;
-            }
-            .rs-row { display: flex; gap: 16px; }
-            .rs-row--2 > * { flex: 1; min-width: 0; }
-            @media (max-width: 520px) {
-              .rs-row { flex-direction: column; }
-            }
-            .rs-field { display: flex; flex-direction: column; gap: 6px; }
-            .rs-label {
-              font-size: 12px !important;
-              font-weight: 700 !important;
-              letter-spacing: 0.4px !important;
-              text-transform: uppercase !important;
-              color: #475569 !important;
-            }
-            .rs-required { color: #ef4444; }
-            .rs-input-wrap { position: relative; }
-            .rs-input {
-              height: 42px !important;
-              padding-left: 38px !important;
-              border-radius: 10px !important;
-              border: 1px solid #e2e8f0 !important;
-              background: #fff !important;
-              font-size: 14px !important;
-              font-weight: 500 !important;
-              color: #0f172a !important;
-              transition: border-color 0.15s, box-shadow 0.15s !important;
-              font-family: inherit !important;
-            }
-            .rs-input:focus {
-              border-color: #6366f1 !important;
-              box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-              outline: none !important;
-            }
-            .rs-input--readonly {
-              background: #f8fafc !important;
-              color: #94a3b8 !important;
-              cursor: not-allowed !important;
-            }
-            .rs-input--error {
-              border-color: #ef4444 !important;
-            }
-            .rs-input--error:focus {
-              box-shadow: 0 0 0 3px rgba(239,68,68,0.12) !important;
-            }
-            .rs-icon {
-              position: absolute;
-              left: 12px;
-              top: 50%;
-              transform: translateY(-50%);
-              height: 15px;
-              width: 15px;
-              color: #94a3b8;
-              pointer-events: none;
-            }
-            .rs-hint {
-              font-size: 11px;
-              color: #94a3b8;
-              margin: 0;
-            }
-            .rs-error {
-              font-size: 12px;
-              color: #ef4444;
-              margin: 0;
-              font-weight: 500;
-            }
-          `}</style>
+          {/* Phone Number */}
+          <div className="space-y-1.5">
+            <label className="text-[12.5px] font-medium text-gray-700 block">
+              Phone number <span className="text-red-500">*</span>
+            </label>
+            <PhoneNumber
+              isFormik
+              initialValue={initialValues.phone}
+              initialCountryCode={initialValues.phoneCode}
+            />
+          </div>
+
+          {/* Designation */}
+          <div className="space-y-1.5">
+            <label htmlFor="designation" className="text-[12.5px] font-medium text-gray-700 block">
+              Designation / Role <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="designation"
+              name="designation"
+              placeholder="e.g. Founder, CEO, Manager"
+              value={values.designation}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={cn(
+                "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                touched.designation && errors.designation && "border-red-500 focus:border-red-500 focus:ring-red-500"
+              )}
+            />
+            {touched.designation && errors.designation && (
+              <p className="text-[11.5px] font-medium text-red-600 mt-1">
+                {errors.designation}
+              </p>
+            )}
+          </div>
         </Form>
       )}
     </Formik>

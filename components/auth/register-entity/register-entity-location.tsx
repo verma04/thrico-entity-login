@@ -3,8 +3,6 @@
 import React, { useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { Globe, MapPin, ExternalLink } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -23,7 +21,7 @@ interface RegisterEntityLocationProps {
 
 const validationSchema = Yup.object().shape({
   website: Yup.string()
-    .matches(/^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/, "Enter a valid URL")
+    .matches(/^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/, "Enter a valid URL (e.g. acme.com)")
     .required("Website is required"),
   address: Yup.string().min(5, "Too short").required("Address is required"),
 });
@@ -64,7 +62,7 @@ const RegisterEntityLocation: React.FC<RegisterEntityLocationProps> = ({
       setAutoCompleteResult([]);
       setShowAutocomplete(false);
     } else {
-      const suggestions = [".com", ".org", ".net", ".tech", ".in", ".io"].map(
+      const suggestions = [".com", ".org", ".net", ".io", ".in", ".tech"].map(
         (domain) => `${value.toLowerCase()}${domain}`
       );
       setAutoCompleteResult(suggestions);
@@ -86,128 +84,80 @@ const RegisterEntityLocation: React.FC<RegisterEntityLocationProps> = ({
       validateOnMount
     >
       {({ values, errors, touched, setFieldValue, handleBlur, handleChange }) => (
-        <Form className="w-full">
+        <Form className="w-full space-y-4">
           <FormikStepSync step={4} />
 
-          <div className="rs-header">
-            <h2 className="rs-title">Location & website</h2>
-            <p className="rs-sub">Establish your physical and digital presence</p>
-          </div>
-
-          <div className="rs-fields">
-            <div className="rs-field">
-              <Label className="rs-label">
-                Official Website <span className="rs-required">*</span>
-              </Label>
-              <div className="rs-input-wrap">
-                <Input
-                  name="website"
-                  placeholder="example.com"
-                  value={values.website}
-                  onChange={(e) => {
-                    handleChange(e);
-                    onWebsiteChange(e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    handleBlur(e);
-                    setTimeout(() => setShowAutocomplete(false), 200);
-                  }}
-                  className={cn(
-                    "rs-input",
-                    touched.website && errors.website && "rs-input--error"
-                  )}
-                />
-                <Globe className="rs-icon" />
-
-                {showAutocomplete && autoCompleteResult.length > 0 && (
-                  <div className="rs-autocomplete">
-                    {autoCompleteResult.map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        className="rs-autocomplete-item"
-                        onClick={() => {
-                          setFieldValue("website", option);
-                          setShowAutocomplete(false);
-                        }}
-                      >
-                        <span>{option}</span>
-                        <ExternalLink className="h-3 w-3 text-slate-400" />
-                      </button>
-                    ))}
-                  </div>
+          {/* Official Website */}
+          <div className="space-y-1.5">
+            <label htmlFor="website" className="text-[12.5px] font-medium text-gray-700 block">
+              Official website <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <Input
+                id="website"
+                name="website"
+                placeholder="example.com"
+                value={values.website}
+                onChange={(e) => {
+                  handleChange(e);
+                  onWebsiteChange(e.target.value);
+                }}
+                onBlur={(e) => {
+                  handleBlur(e);
+                  setTimeout(() => setShowAutocomplete(false), 200);
+                }}
+                className={cn(
+                  "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                  touched.website && errors.website && "border-red-500 focus:border-red-500 focus:ring-red-500"
                 )}
-              </div>
-              {touched.website && errors.website && (
-                <p className="rs-error">{errors.website as string}</p>
-              )}
-            </div>
+              />
 
-            <div className="rs-field">
-              <Label className="rs-label">
-                Headquarters Address <span className="rs-required">*</span>
-              </Label>
-              <div className="rs-input-wrap">
-                <Textarea
-                  name="address"
-                  placeholder="Street, City, State, ZIP"
-                  value={values.address}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={cn(
-                    "rs-textarea",
-                    touched.address && errors.address && "rs-input--error"
-                  )}
-                />
-                <MapPin className="rs-icon rs-icon--top" />
-              </div>
-              {touched.address && errors.address && (
-                <p className="rs-error">{errors.address as string}</p>
+              {showAutocomplete && autoCompleteResult.length > 0 && (
+                <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-1">
+                  {autoCompleteResult.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className="w-full text-left px-3 py-1.5 text-[13px] text-gray-700 hover:bg-gray-50 hover:text-black rounded-md cursor-pointer transition-colors"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setFieldValue("website", option);
+                        setShowAutocomplete(false);
+                      }}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
+            {touched.website && errors.website && (
+              <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.website as string}</p>
+            )}
           </div>
 
-          <style>{`
-            .rs-header { margin-bottom: 28px; }
-            .rs-title { font-size: 20px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px; margin: 0 0 6px; }
-            .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
-            .rs-fields { display: flex; flex-direction: column; gap: 20px; }
-            .rs-field { display: flex; flex-direction: column; gap: 6px; }
-            .rs-label { font-size: 12px !important; font-weight: 700 !important; letter-spacing: 0.4px !important; text-transform: uppercase !important; color: #475569 !important; }
-            .rs-required { color: #ef4444; }
-            .rs-input-wrap { position: relative; }
-            .rs-input {
-              height: 42px !important; padding-left: 38px !important; border-radius: 10px !important;
-              border: 1px solid #e2e8f0 !important; background: #fff !important;
-              font-size: 14px !important; font-weight: 500 !important; color: #0f172a !important;
-              transition: border-color 0.15s, box-shadow 0.15s !important; font-family: inherit !important;
-            }
-            .rs-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important; outline: none !important; }
-            .rs-input--error { border-color: #ef4444 !important; }
-            .rs-textarea {
-              min-height: 100px !important; padding: 12px 12px 12px 38px !important; border-radius: 10px !important;
-              border: 1px solid #e2e8f0 !important; background: #fff !important;
-              font-size: 14px !important; font-weight: 500 !important; color: #0f172a !important;
-              resize: none !important; font-family: inherit !important;
-              transition: border-color 0.15s, box-shadow 0.15s !important;
-            }
-            .rs-textarea:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important; outline: none !important; }
-            .rs-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); height: 15px; width: 15px; color: #94a3b8; pointer-events: none; }
-            .rs-icon--top { top: 14px; transform: none; }
-            .rs-autocomplete {
-              position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
-              background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-              box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 4px; overflow: hidden;
-            }
-            .rs-autocomplete-item {
-              width: 100%; display: flex; align-items: center; justify-content: space-between;
-              padding: 9px 12px; border: none; background: transparent; cursor: pointer;
-              font-size: 13px; font-weight: 500; color: #334155; border-radius: 7px;
-              text-align: left; font-family: inherit; transition: background 0.12s;
-            }
-            .rs-autocomplete-item:hover { background: #f8fafc; }
-            .rs-error { font-size: 12px; color: #ef4444; margin: 0; font-weight: 500; }
-          `}</style>
+          {/* Headquarters Address */}
+          <div className="space-y-1.5">
+            <label htmlFor="address" className="text-[12.5px] font-medium text-gray-700 block">
+              Headquarters address <span className="text-red-500">*</span>
+            </label>
+            <Textarea
+              id="address"
+              name="address"
+              placeholder="Street, City, State, ZIP"
+              value={values.address}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              rows={3}
+              className={cn(
+                "w-full p-3 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black resize-none",
+                touched.address && errors.address && "border-red-500 focus:border-red-500 focus:ring-red-500"
+              )}
+            />
+            {touched.address && errors.address && (
+              <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.address as string}</p>
+            )}
+          </div>
         </Form>
       )}
     </Formik>

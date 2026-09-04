@@ -3,8 +3,7 @@
 import React, { useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { ShieldCheck, Building2, User, CreditCard, MapPin, Receipt } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { Building2, User, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -56,7 +55,6 @@ const INDIAN_STATES = [
   "Puducherry",
 ];
 
-/* ─── Types ─── */
 type AccountType = "individual" | "enterprise";
 
 interface KycFormData {
@@ -76,13 +74,12 @@ interface RegisterEntityKycProps {
   setKyc: (kyc: any) => void;
 }
 
-/* ─── Validation ─── */
 const validationSchema = Yup.object().shape({
   accountType: Yup.string()
     .oneOf(["individual", "enterprise"])
     .required("Account type is required"),
   panCard: Yup.string()
-    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Please add a valid PAN ID (e.g. ABCDE1234F)")
+    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Please enter a valid PAN (e.g. ABCDE1234F)")
     .required("PAN card is required"),
   gstNumber: Yup.string().when("accountType", {
     is: "enterprise",
@@ -90,9 +87,9 @@ const validationSchema = Yup.object().shape({
       schema
         .matches(
           /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/,
-          "Please add a valid GST ID (e.g. 22ABCDE1234F1Z5)"
+          "Please enter a valid GSTIN (e.g. 22ABCDE1234F1Z5)"
         )
-        .required("GST number is required for enterprise accounts"),
+        .required("GST number is required for enterprise"),
     otherwise: (schema) => schema.notRequired(),
   }),
   billingAddressLine1: Yup.string()
@@ -106,7 +103,6 @@ const validationSchema = Yup.object().shape({
     .required("PIN code is required"),
 });
 
-/* ─── Formik Step Sync ─── */
 const FormikStepSync = ({ step }: { step: number }) => {
   const { isValid, handleSubmit } = useFormikContext<any>();
   const { setStepValidity, setSubmitHandler } = useRegisterEntityFormStore();
@@ -122,25 +118,21 @@ const FormikStepSync = ({ step }: { step: number }) => {
   return null;
 };
 
-/* ─── Account Type Cards ─── */
 const accountTypes = [
   {
     value: "individual" as AccountType,
     label: "Individual",
-    description: "Freelancer, sole proprietor, or personal account",
+    description: "Personal, Freelancer or Sole Proprietor",
     icon: User,
-    tag: "PAN required",
   },
   {
     value: "enterprise" as AccountType,
     label: "Enterprise",
-    description: "Company, LLP, or registered business entity",
+    description: "Registered Company, LLP or Organization",
     icon: Building2,
-    tag: "PAN + GST required",
   },
 ];
 
-/* ─── Component ─── */
 const RegisterEntityKyc: React.FC<RegisterEntityKycProps> = ({
   setCurrent,
   kyc,
@@ -148,7 +140,7 @@ const RegisterEntityKyc: React.FC<RegisterEntityKycProps> = ({
 }) => {
   const initialValues: KycFormData = useMemo(
     () => ({
-      accountType: kyc?.accountType || "",
+      accountType: (kyc?.accountType || "individual") as AccountType,
       panCard: kyc?.panCard || "",
       gstNumber: kyc?.gstNumber || "",
       billingAddressLine1: kyc?.billingAddressLine1 || "",
@@ -174,379 +166,223 @@ const RegisterEntityKyc: React.FC<RegisterEntityKycProps> = ({
       validateOnMount
     >
       {({ values, errors, touched, setFieldValue, handleBlur, handleChange }) => (
-        <Form className="w-full">
+        <Form className="w-full space-y-4">
           <FormikStepSync step={5} />
 
-          <div className="kyc-header">
-            <h2 className="rs-title">
-              <ShieldCheck className="kyc-title-icon" />
-              KYC Verification
-            </h2>
-            <p className="rs-sub">
-              Complete your identity verification for compliance
-            </p>
+          {/* Account Type Selection */}
+          <div className="space-y-1.5">
+            <label className="text-[12.5px] font-medium text-gray-700 block">
+              Account type <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-2 gap-2.5">
+              {accountTypes.map((type) => {
+                const Icon = type.icon;
+                const isSelected = values.accountType === type.value;
+                return (
+                  <button
+                    key={type.value}
+                    type="button"
+                    onClick={() => {
+                      setFieldValue("accountType", type.value);
+                      if (type.value === "individual") {
+                        setFieldValue("gstNumber", "");
+                      }
+                    }}
+                    className={cn(
+                      "flex flex-col text-left p-3 rounded-lg border transition-all cursor-pointer relative",
+                      isSelected
+                        ? "border-black bg-gray-50/80 shadow-xs"
+                        : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/40"
+                    )}
+                  >
+                    <div className="flex items-center justify-between w-full mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <Icon className={cn("h-4.5 w-4.5", isSelected ? "text-black" : "text-gray-500")} />
+                        <span className="text-[13.5px] font-semibold text-gray-900">{type.label}</span>
+                      </div>
+                      {isSelected && (
+                        <div className="h-4.5 w-4.5 rounded-full bg-black flex items-center justify-center">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-[11.5px] text-gray-500 leading-snug">{type.description}</p>
+                  </button>
+                );
+              })}
+            </div>
+            {touched.accountType && errors.accountType && (
+              <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.accountType as string}</p>
+            )}
           </div>
 
-          <div className="kyc-sections">
-            {/* ── Account Type ── */}
-            <div className="kyc-section">
-              <div className="kyc-section-label">Account Type <span className="rs-required">*</span></div>
-              <div className="kyc-type-grid">
-                {accountTypes.map((type) => {
-                  const Icon = type.icon;
-                  const selected = values.accountType === type.value;
-                  return (
-                    <button
-                      key={type.value}
-                      type="button"
-                      onClick={() => {
-                        setFieldValue("accountType", type.value);
-                        if (type.value === "individual") {
-                          setFieldValue("gstNumber", "");
-                        }
-                      }}
-                      className={cn(
-                        "kyc-type-card",
-                        selected && "kyc-type-card--selected"
-                      )}
-                    >
-                      <div className="kyc-type-icon-wrap">
-                        <Icon className="kyc-type-icon" />
-                      </div>
-                      <div className="kyc-type-text">
-                        <span className="kyc-type-name">{type.label}</span>
-                        <span className="kyc-type-desc">{type.description}</span>
-                      </div>
-                      <span className={cn("kyc-type-tag", selected && "kyc-type-tag--selected")}>
-                        {type.tag}
-                      </span>
-                      <div className={cn("kyc-type-radio", selected && "kyc-type-radio--on")} />
-                    </button>
-                  );
-                })}
-              </div>
-              {touched.accountType && errors.accountType && (
-                <p className="rs-error">{errors.accountType as string}</p>
+          {/* PAN & GST */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label htmlFor="panCard" className="text-[12.5px] font-medium text-gray-700 block">
+                PAN card number <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="panCard"
+                name="panCard"
+                placeholder="ABCDE1234F"
+                value={values.panCard}
+                onChange={(e) => {
+                  const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+                  setFieldValue("panCard", val);
+                }}
+                onBlur={handleBlur}
+                maxLength={10}
+                className={cn(
+                  "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white font-mono uppercase transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                  touched.panCard && errors.panCard && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
+              />
+              {touched.panCard && errors.panCard && (
+                <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.panCard as string}</p>
               )}
             </div>
 
-            {/* ── PAN & GST ── */}
-            {values.accountType && (
-              <div className="kyc-section kyc-fade-in">
-                <div className="kyc-section-label">
-                  <CreditCard className="kyc-section-icon" />
-                  Tax Information
-                </div>
-
-                <div className={cn("rs-row", values.accountType === "enterprise" && "rs-row--2")}>
-                  <div className="rs-field">
-                    <Label className="rs-label">
-                      PAN Card Number <span className="rs-required">*</span>
-                    </Label>
-                    <div className="rs-input-wrap">
-                      <Input
-                        name="panCard"
-                        placeholder="e.g. ABCDE1234F"
-                        value={values.panCard}
-                        onChange={(e) => {
-                          const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
-                          setFieldValue("panCard", val);
-                        }}
-                        onBlur={handleBlur}
-                        maxLength={10}
-                        className={cn(
-                          "rs-input",
-                          touched.panCard && errors.panCard && "rs-input--error"
-                        )}
-                      />
-                      <CreditCard className="rs-icon" />
-                    </div>
-                    {touched.panCard && errors.panCard && (
-                      <p className="rs-error">{errors.panCard as string}</p>
-                    )}
-                  </div>
-
-                  {values.accountType === "enterprise" && (
-                    <div className="rs-field kyc-fade-in">
-                      <Label className="rs-label">
-                        GST Number <span className="rs-required">*</span>
-                      </Label>
-                      <div className="rs-input-wrap">
-                        <Input
-                          name="gstNumber"
-                          placeholder="e.g. 22ABCDE1234F1Z5"
-                          value={values.gstNumber}
-                          onChange={(e) => {
-                            const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15);
-                            setFieldValue("gstNumber", val);
-                          }}
-                          onBlur={handleBlur}
-                          maxLength={15}
-                          className={cn(
-                            "rs-input",
-                            touched.gstNumber && errors.gstNumber && "rs-input--error"
-                          )}
-                        />
-                        <Receipt className="rs-icon" />
-                      </div>
-                      {touched.gstNumber && errors.gstNumber && (
-                        <p className="rs-error">{errors.gstNumber as string}</p>
-                      )}
-                    </div>
+            {values.accountType === "enterprise" && (
+              <div className="space-y-1.5">
+                <label htmlFor="gstNumber" className="text-[12.5px] font-medium text-gray-700 block">
+                  GST number <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  id="gstNumber"
+                  name="gstNumber"
+                  placeholder="22ABCDE1234F1Z5"
+                  value={values.gstNumber}
+                  onChange={(e) => {
+                    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15);
+                    setFieldValue("gstNumber", val);
+                  }}
+                  onBlur={handleBlur}
+                  maxLength={15}
+                  className={cn(
+                    "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white font-mono uppercase transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                    touched.gstNumber && errors.gstNumber && "border-red-500 focus:border-red-500 focus:ring-red-500"
                   )}
-                </div>
-              </div>
-            )}
-
-            {/* ── Billing Address ── */}
-            {values.accountType && (
-              <div className="kyc-section kyc-fade-in">
-                <div className="kyc-section-label">
-                  <MapPin className="kyc-section-icon" />
-                  Billing Address
-                </div>
-
-                <div className="rs-field">
-                  <Label className="rs-label">
-                    Address Line 1 <span className="rs-required">*</span>
-                  </Label>
-                  <Input
-                    name="billingAddressLine1"
-                    placeholder="Street address, building name"
-                    value={values.billingAddressLine1}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={cn(
-                      "rs-input kyc-input-no-icon",
-                      touched.billingAddressLine1 && errors.billingAddressLine1 && "rs-input--error"
-                    )}
-                  />
-                  {touched.billingAddressLine1 && errors.billingAddressLine1 && (
-                    <p className="rs-error">{errors.billingAddressLine1 as string}</p>
-                  )}
-                </div>
-
-                <div className="rs-field">
-                  <Label className="rs-label">Address Line 2</Label>
-                  <Input
-                    name="billingAddressLine2"
-                    placeholder="Landmark, area (optional)"
-                    value={values.billingAddressLine2}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className="rs-input kyc-input-no-icon"
-                  />
-                </div>
-
-                <div className="rs-row rs-row--3">
-                  <div className="rs-field">
-                    <Label className="rs-label">
-                      City <span className="rs-required">*</span>
-                    </Label>
-                    <Input
-                      name="billingCity"
-                      placeholder="e.g. Mumbai"
-                      value={values.billingCity}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={cn(
-                        "rs-input kyc-input-no-icon",
-                        touched.billingCity && errors.billingCity && "rs-input--error"
-                      )}
-                    />
-                    {touched.billingCity && errors.billingCity && (
-                      <p className="rs-error">{errors.billingCity as string}</p>
-                    )}
-                  </div>
-
-                  <div className="rs-field">
-                    <Label className="rs-label">
-                      State <span className="rs-required">*</span>
-                    </Label>
-                    <Select
-                      onValueChange={(val) => setFieldValue("billingState", val)}
-                      defaultValue={values.billingState}
-                    >
-                      <SelectTrigger
-                        className={cn(
-                          "rs-select-trigger",
-                          !values.billingState && "rs-placeholder",
-                          touched.billingState && errors.billingState && "rs-input--error"
-                        )}
-                      >
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[280px]">
-                        {INDIAN_STATES.map((state) => (
-                          <SelectItem key={state} value={state}>
-                            {state}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {touched.billingState && errors.billingState && (
-                      <p className="rs-error">{errors.billingState as string}</p>
-                    )}
-                  </div>
-
-                  <div className="rs-field">
-                    <Label className="rs-label">
-                      PIN Code <span className="rs-required">*</span>
-                    </Label>
-                    <Input
-                      name="billingPincode"
-                      placeholder="e.g. 400001"
-                      value={values.billingPincode}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, "").slice(0, 6);
-                        setFieldValue("billingPincode", val);
-                      }}
-                      onBlur={handleBlur}
-                      maxLength={6}
-                      className={cn(
-                        "rs-input kyc-input-no-icon",
-                        touched.billingPincode && errors.billingPincode && "rs-input--error"
-                      )}
-                    />
-                    {touched.billingPincode && errors.billingPincode && (
-                      <p className="rs-error">{errors.billingPincode as string}</p>
-                    )}
-                  </div>
-                </div>
+                />
+                {touched.gstNumber && errors.gstNumber && (
+                  <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.gstNumber as string}</p>
+                )}
               </div>
             )}
           </div>
 
-          <style>{`
-            /* ── KYC Step Styles ── */
-            .kyc-header { margin-bottom: 28px; }
-            .kyc-title-icon {
-              display: inline; vertical-align: -3px;
-              height: 20px; width: 20px; margin-right: 6px; color: #6366f1;
-            }
-            .rs-title {
-              font-size: 20px; font-weight: 800; color: #0f172a;
-              letter-spacing: -0.4px; margin: 0 0 6px;
-            }
-            .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
+          {/* Billing Address Line 1 */}
+          <div className="space-y-1.5">
+            <label htmlFor="billingAddressLine1" className="text-[12.5px] font-medium text-gray-700 block">
+              Billing address <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="billingAddressLine1"
+              name="billingAddressLine1"
+              placeholder="Street address, building name"
+              value={values.billingAddressLine1}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={cn(
+                "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                touched.billingAddressLine1 && errors.billingAddressLine1 && "border-red-500 focus:border-red-500 focus:ring-red-500"
+              )}
+            />
+            {touched.billingAddressLine1 && errors.billingAddressLine1 && (
+              <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.billingAddressLine1 as string}</p>
+            )}
+          </div>
 
-            .kyc-sections { display: flex; flex-direction: column; gap: 28px; }
-            .kyc-section { display: flex; flex-direction: column; gap: 14px; }
-            .kyc-section-label {
-              display: flex; align-items: center; gap: 6px;
-              font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
-              text-transform: uppercase; color: #475569;
-            }
-            .kyc-section-icon { height: 14px; width: 14px; color: #6366f1; }
+          {/* Billing Address Line 2 */}
+          <div className="space-y-1.5">
+            <Input
+              name="billingAddressLine2"
+              placeholder="Apartment, suite, unit (optional)"
+              value={values.billingAddressLine2}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className="w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black"
+            />
+          </div>
 
-            /* ── Account type cards ── */
-            .kyc-type-grid { display: flex; flex-direction: column; gap: 10px; }
-            .kyc-type-card {
-              display: flex; align-items: center; gap: 14px;
-              padding: 16px 18px; border-radius: 14px;
-              border: 1.5px solid #e2e8f0; background: #fff;
-              cursor: pointer; text-align: left;
-              font-family: inherit;
-              transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
-            }
-            .kyc-type-card:hover { border-color: #cbd5e1; background: #fafbfc; }
-            .kyc-type-card--selected {
-              border-color: #6366f1 !important; background: #fafaff !important;
-              box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
-            }
-            .kyc-type-icon-wrap {
-              width: 38px; height: 38px; border-radius: 10px;
-              display: flex; align-items: center; justify-content: center;
-              background: #f1f5f9; flex-shrink: 0;
-              transition: background 0.18s;
-            }
-            .kyc-type-card--selected .kyc-type-icon-wrap { background: #eef2ff; }
-            .kyc-type-icon { height: 18px; width: 18px; color: #64748b; }
-            .kyc-type-card--selected .kyc-type-icon { color: #6366f1; }
-            .kyc-type-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-            .kyc-type-name { font-size: 14px; font-weight: 700; color: #0f172a; }
-            .kyc-type-desc { font-size: 11px; color: #94a3b8; }
-            .kyc-type-tag {
-              font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
-              padding: 3px 8px; border-radius: 6px;
-              background: #f1f5f9; color: #64748b;
-              white-space: nowrap; flex-shrink: 0;
-              transition: background 0.18s, color 0.18s;
-            }
-            .kyc-type-tag--selected { background: #eef2ff; color: #6366f1; }
-            .kyc-type-radio {
-              width: 18px; height: 18px; border-radius: 50%;
-              border: 2px solid #d1d5db; flex-shrink: 0;
-              position: relative;
-              transition: border-color 0.15s;
-            }
-            .kyc-type-radio--on {
-              border-color: #6366f1;
-            }
-            .kyc-type-radio--on::after {
-              content: ""; position: absolute;
-              top: 3px; left: 3px;
-              width: 8px; height: 8px;
-              border-radius: 50%; background: #6366f1;
-            }
+          {/* City, State, PIN Code */}
+          <div className="grid grid-cols-3 gap-2.5">
+            <div className="space-y-1.5">
+              <label htmlFor="billingCity" className="text-[12.5px] font-medium text-gray-700 block">
+                City <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="billingCity"
+                name="billingCity"
+                placeholder="City"
+                value={values.billingCity}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={cn(
+                  "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                  touched.billingCity && errors.billingCity && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
+              />
+              {touched.billingCity && errors.billingCity && (
+                <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.billingCity as string}</p>
+              )}
+            </div>
 
-            /* ── Reused field styles ── */
-            .rs-fields { display: flex; flex-direction: column; gap: 20px; }
-            .rs-row { display: flex; gap: 16px; }
-            .rs-row--2 > * { flex: 1; min-width: 0; }
-            .rs-row--3 > * { flex: 1; min-width: 0; }
-            @media (max-width: 520px) { .rs-row { flex-direction: column; } }
-            .rs-field { display: flex; flex-direction: column; gap: 6px; }
-            .rs-label {
-              font-size: 12px !important; font-weight: 700 !important;
-              letter-spacing: 0.4px !important; text-transform: uppercase !important;
-              color: #475569 !important;
-            }
-            .rs-required { color: #ef4444; }
-            .rs-input-wrap { position: relative; }
-            .rs-input {
-              height: 42px !important; padding-left: 38px !important;
-              border-radius: 10px !important; border: 1px solid #e2e8f0 !important;
-              background: #fff !important; font-size: 14px !important;
-              font-weight: 500 !important; color: #0f172a !important;
-              transition: border-color 0.15s, box-shadow 0.15s !important;
-              font-family: inherit !important;
-            }
-            .kyc-input-no-icon { padding-left: 14px !important; }
-            .rs-input:focus {
-              border-color: #6366f1 !important;
-              box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-              outline: none !important;
-            }
-            .rs-input--error { border-color: #ef4444 !important; }
-            .rs-select-trigger {
-              height: 42px !important; border-radius: 10px !important;
-              border: 1px solid #e2e8f0 !important; background: #fff !important;
-              font-size: 14px !important; font-weight: 500 !important;
-              color: #0f172a !important; font-family: inherit !important;
-            }
-            .rs-select-trigger:focus {
-              border-color: #6366f1 !important;
-              box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-            }
-            .rs-placeholder { color: #94a3b8 !important; }
-            .rs-icon {
-              position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-              height: 15px; width: 15px; color: #94a3b8; pointer-events: none;
-            }
-            .rs-error {
-              font-size: 12px; color: #ef4444; margin: 0; font-weight: 500;
-            }
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-gray-700 block">
+                State <span className="text-red-500">*</span>
+              </label>
+              <Select
+                onValueChange={(val) => setFieldValue("billingState", val)}
+                defaultValue={values.billingState}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                    !values.billingState && "text-gray-400",
+                    touched.billingState && errors.billingState && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  )}
+                >
+                  <SelectValue placeholder="State" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[220px] rounded-lg border border-gray-200">
+                  {INDIAN_STATES.map((state) => (
+                    <SelectItem key={state} value={state} className="text-[13px] py-1.5 cursor-pointer">
+                      {state}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {touched.billingState && errors.billingState && (
+                <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.billingState as string}</p>
+              )}
+            </div>
 
-            /* ── Fade-in animation ── */
-            .kyc-fade-in {
-              animation: kyc-slide-in 0.28s ease both;
-            }
-            @keyframes kyc-slide-in {
-              from { opacity: 0; transform: translateY(8px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-          `}</style>
+            <div className="space-y-1.5">
+              <label htmlFor="billingPincode" className="text-[12.5px] font-medium text-gray-700 block">
+                PIN code <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="billingPincode"
+                name="billingPincode"
+                placeholder="400001"
+                value={values.billingPincode}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+                  setFieldValue("billingPincode", val);
+                }}
+                onBlur={handleBlur}
+                maxLength={6}
+                className={cn(
+                  "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none placeholder:text-gray-400 border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                  touched.billingPincode && errors.billingPincode && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
+              />
+              {touched.billingPincode && errors.billingPincode && (
+                <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.billingPincode as string}</p>
+              )}
+            </div>
+          </div>
         </Form>
       )}
     </Formik>

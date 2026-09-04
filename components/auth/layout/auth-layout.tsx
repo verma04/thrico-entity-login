@@ -36,12 +36,14 @@ interface AuthLayoutProps {
   children: React.ReactNode;
   logoAlign?: "left" | "center";
   hideLogo?: boolean;
+  cardClassName?: string;
 }
 
 const AuthLayout = ({
   children,
   logoAlign = "left",
   hideLogo = false,
+  cardClassName = "",
 }: AuthLayoutProps) => {
   return (
     <div className="auth-root-shopify">
@@ -52,7 +54,7 @@ const AuthLayout = ({
 
       <div className="auth-container">
         {/* Center Card */}
-        <div className="auth-card-shopify">
+        <div className={`auth-card-shopify ${cardClassName}`.trim()}>
           {/* Brand Logo inside Card */}
           {!hideLogo && (
             <div
@@ -121,7 +123,7 @@ const AuthLayout = ({
           justify-content: center;
           position: relative;
           background-color: #060809;
-          font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+          font-family: var(--font-figtree), "Figtree", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
           color: #ffffff;
           overflow-x: hidden;
         }

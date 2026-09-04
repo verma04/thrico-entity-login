@@ -8,11 +8,7 @@ import {
   AlertTriangle,
   Loader2,
   ExternalLink,
-  Upload,
-  Link2,
-  Shield,
 } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
@@ -26,11 +22,15 @@ interface DomainFormData {
 }
 
 interface RegisterEntityDomainProps {
-  setCurrent: (step: number) => void;
+  setCurrent?: (step: number) => void;
   domain: string;
   setDomain: (domain: string) => void;
   onSubmit: (values: DomainFormData) => void;
   loading: boolean;
+  logo?: any;
+  setLogo?: (logo: any) => void;
+  logoPreview?: string;
+  setLogoPreview?: (preview: string) => void;
 }
 
 const validationSchema = Yup.object().shape({
@@ -114,227 +114,134 @@ const DomainFormContent: React.FC = () => {
   const fullDomain = domain ? `${domain}.thrico.community` : "";
 
   return (
-    <Form className="w-full">
+    <Form className="w-full space-y-4">
       <FormikStepSync
         step={6}
         isDomainAvailable={isDomainAvailable === true}
       />
 
-      <div className="rd-header">
-        <h2 className="rs-title">Identity & branding</h2>
-        <p className="rs-sub">Finalise your unique digital identity on Thrico</p>
-      </div>
-
-      <div className="rd-sections">
-
-        {/* Subdomain Section */}
-        <div className="rd-section">
-          <div className="rd-section-label">
-            <Link2 className="h-3.5 w-3.5" />
-            Subdomain <span className="rs-required">*</span>
-          </div>
-
-          {/* Domain input row */}
-          <div
-            className={cn(
-              "rd-domain-wrap",
-              isDomainAvailable && "rd-domain-wrap--ok",
-              isDomainTaken && "rd-domain-wrap--err"
-            )}
-          >
-            <span className="rd-domain-prefix">https://</span>
-            <Input
-              type="text"
-              name="domain"
-              value={values.domain}
-              placeholder="brand-name"
-              className="rd-domain-input"
-              onChange={(e) => handleDomainChange(e.target.value)}
-              onBlur={handleBlur}
-              maxLength={63}
-            />
-            <span className="rd-domain-suffix">.thrico.community</span>
-          </div>
-
-          {/* Status */}
-          {isChecking && (
-            <div className="rd-status rd-status--checking">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Checking availability…
-            </div>
+      {/* Subdomain Input */}
+      <div className="space-y-1.5">
+        <label htmlFor="domain" className="text-[12.5px] font-medium text-gray-700 block">
+          Choose subdomain <span className="text-red-500">*</span>
+        </label>
+        <div
+          className={cn(
+            "flex items-center w-full h-10 rounded-md border text-[13.5px] bg-white transition-all overflow-hidden border-gray-300 focus-within:border-black focus-within:ring-1 focus-within:ring-black",
+            isDomainAvailable && "border-emerald-500 focus-within:border-emerald-600 focus-within:ring-emerald-500",
+            isDomainTaken && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500",
+            touched.domain && errors.domain && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500"
           )}
-          {isDomainAvailable && domain === debouncedDomain && (
-            <div className="rd-status rd-status--ok">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              <span>
-                <strong>{fullDomain}</strong> is available
-              </span>
+        >
+          <span className="px-3 text-[12.5px] font-medium text-gray-400 bg-gray-50 border-r border-gray-200 select-none">
+            https://
+          </span>
+          <Input
+            id="domain"
+            type="text"
+            name="domain"
+            value={values.domain}
+            placeholder="brand-name"
+            className="flex-1 h-full px-3 border-0 rounded-none text-[13.5px] text-gray-900 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400 font-mono"
+            onChange={(e) => handleDomainChange(e.target.value)}
+            onBlur={handleBlur}
+            maxLength={63}
+          />
+          <span className="px-3 text-[12.5px] font-medium text-gray-500 bg-gray-50 border-l border-gray-200 select-none">
+            .thrico.community
+          </span>
+        </div>
+
+        {/* Availability status */}
+        {isChecking && (
+          <div className="flex items-center gap-1.5 text-[12px] text-gray-500 mt-1">
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-600" />
+            <span>Checking availability...</span>
+          </div>
+        )}
+        {isDomainAvailable && domain === debouncedDomain && (
+          <div className="flex items-center gap-1.5 text-[12px] text-emerald-600 font-medium mt-1">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            <span><strong>{fullDomain}</strong> is available!</span>
+          </div>
+        )}
+        {isDomainTaken && domain === debouncedDomain && (
+          <div className="space-y-2 mt-1">
+            <div className="flex items-center gap-1.5 text-[12px] text-red-600 font-medium">
+              <AlertTriangle className="h-4 w-4 text-red-600 shrink-0" />
+              <span>This subdomain is already taken</span>
             </div>
-          )}
-          {isDomainTaken && domain === debouncedDomain && (
-            <>
-              <div className="rd-status rd-status--err">
-                <AlertTriangle className="h-3.5 w-3.5" />
-                This subdomain is already taken
-              </div>
-              {/* Suggestions */}
-              <div className="rd-suggestions">
-                <div className="rd-suggestions-header">
-                  <span>Try one of these</span>
-                  <button type="button" onClick={generateSuggestions} className="rd-refresh">
+            {suggestions.length > 0 && (
+              <div className="p-2.5 rounded-md bg-gray-50 border border-gray-200 space-y-1.5">
+                <div className="flex items-center justify-between text-[11.5px] text-gray-500 font-medium">
+                  <span>Suggested alternatives:</span>
+                  <button
+                    type="button"
+                    onClick={generateSuggestions}
+                    className="text-[#005bd3] hover:underline cursor-pointer"
+                  >
                     Refresh
                   </button>
                 </div>
-                <div className="rd-pills">
+                <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {suggestions.map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => setFieldValue("domain", s)}
-                      className="rd-pill"
+                      className="px-2.5 py-1 rounded text-[11.5px] font-mono bg-white border border-gray-200 text-gray-700 hover:border-black hover:text-black cursor-pointer transition-colors"
                     >
                       {s}
                     </button>
                   ))}
                 </div>
               </div>
-            </>
-          )}
-          {touched.domain && errors.domain && !isChecking && (
-            <p className="rs-error">{errors.domain as string}</p>
-          )}
-        </div>
-
-        {/* Agreement */}
-        <div className="rd-section">
-          <div className="rd-section-label">
-            <Shield className="h-3.5 w-3.5" />
-            Terms & Agreement
-          </div>
-          <div
-            className={cn(
-              "rd-agreement",
-              values.agreement && "rd-agreement--checked"
             )}
-          >
-            <Checkbox
-              id="agreement"
-              checked={values.agreement}
-              onCheckedChange={(checked) => setFieldValue("agreement", Boolean(checked))}
-              className="rd-checkbox"
-            />
-            <label htmlFor="agreement" className="rd-agreement-label">
-              <span className="rd-agreement-title">
-                I am legally authorised to register this entity
-              </span>
-              <span className="rd-agreement-desc">
-                All information provided is accurate and I agree to the{" "}
-                <a
-                  href="https://thrico.com/privacy-policy/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rd-agreement-link"
-                >
-                  Privacy Policy <ExternalLink className="h-2.5 w-2.5 inline" />
-                </a>
-              </span>
-            </label>
           </div>
-          {touched.agreement && errors.agreement && (
-            <p className="rs-error">{errors.agreement as string}</p>
-          )}
-        </div>
+        )}
+        {touched.domain && errors.domain && !isChecking && (
+          <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.domain as string}</p>
+        )}
       </div>
 
-      <style>{`
-        .rd-header { margin-bottom: 28px; }
-        .rs-title { font-size: 20px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px; margin: 0 0 6px; }
-        .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
-        .rs-required { color: #ef4444; }
-        .rs-error { font-size: 12px; color: #ef4444; margin: 4px 0 0; font-weight: 500; }
-
-        .rd-sections { display: flex; flex-direction: column; gap: 28px; }
-        .rd-section { display: flex; flex-direction: column; gap: 10px; }
-        .rd-section-label {
-          display: flex; align-items: center; gap: 6px;
-          font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
-          text-transform: uppercase; color: #64748b;
-          padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;
-        }
-        .rd-hint { font-size: 11px; color: #94a3b8; margin: 0; }
-
-        /* Domain input */
-        .rd-domain-wrap {
-          display: flex; align-items: center;
-          border: 1.5px solid #e2e8f0; border-radius: 12px;
-          background: #fff; overflow: hidden;
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .rd-domain-wrap:focus-within {
-          border-color: #6366f1;
-          box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
-        }
-        .rd-domain-wrap--ok { border-color: #10b981; }
-        .rd-domain-wrap--ok:focus-within { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.12); }
-        .rd-domain-wrap--err { border-color: #ef4444; }
-        .rd-domain-wrap--err:focus-within { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
-
-        .rd-domain-prefix, .rd-domain-suffix {
-          font-size: 13px; font-weight: 600; color: #94a3b8;
-          padding: 0 10px; white-space: nowrap; font-family: ui-monospace, monospace;
-          flex-shrink: 0;
-        }
-        .rd-domain-suffix { color: #6366f1; }
-        .rd-domain-input {
-          flex: 1 !important; border: none !important; box-shadow: none !important;
-          background: transparent !important; border-radius: 0 !important;
-          height: 46px !important; font-size: 16px !important; font-weight: 700 !important;
-          color: #0f172a !important; padding: 0 4px !important;
-          font-family: ui-monospace, monospace !important;
-          min-width: 0 !important;
-        }
-        .rd-domain-input:focus { outline: none !important; box-shadow: none !important; }
-
-        /* Status banners */
-        .rd-status {
-          display: flex; align-items: center; gap: 8px;
-          padding: 10px 14px; border-radius: 10px;
-          font-size: 13px; font-weight: 600;
-        }
-        .rd-status--checking { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
-        .rd-status--ok { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .rd-status--err { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-
-        /* Suggestions */
-        .rd-suggestions { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; }
-        .rd-suggestions-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .rd-suggestions-header span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
-        .rd-refresh { font-size: 11px; font-weight: 700; color: #6366f1; background: none; border: none; cursor: pointer; font-family: inherit; }
-        .rd-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-        .rd-pill {
-          padding: 6px 14px; border-radius: 8px;
-          background: #fff; border: 1px solid #e2e8f0;
-          font-size: 12px; font-weight: 600; color: #334155;
-          cursor: pointer; font-family: ui-monospace, monospace;
-          transition: background 0.12s, border-color 0.12s, color 0.12s;
-        }
-        .rd-pill:hover { background: #6366f1; border-color: #6366f1; color: #fff; }
-
-        /* Agreement */
-        .rd-agreement {
-          display: flex; align-items: flex-start; gap: 12px;
-          padding: 16px; border-radius: 12px;
-          border: 1.5px solid #e2e8f0; background: #fff;
-          cursor: pointer; transition: border-color 0.15s, background 0.15s;
-        }
-        .rd-agreement--checked { border-color: #6366f1; background: #fafafe; }
-        .rd-checkbox { width: 18px !important; height: 18px !important; flex-shrink: 0; margin-top: 2px; }
-        .rd-agreement-label { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
-        .rd-agreement-title { font-size: 14px; font-weight: 700; color: #0f172a; }
-        .rd-agreement-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
-        .rd-agreement-link { color: #6366f1; font-weight: 600; text-decoration: none; }
-        .rd-agreement-link:hover { text-decoration: underline; }
-      `}</style>
+      {/* Terms & Agreement Checkbox */}
+      <div className="pt-1">
+        <div className="flex items-start gap-3 p-3.5 rounded-lg border border-gray-200 bg-gray-50/50">
+          <Checkbox
+            id="agreement"
+            checked={values.agreement}
+            onCheckedChange={(checked) => setFieldValue("agreement", Boolean(checked))}
+            className="mt-0.5 h-4.5 w-4.5"
+          />
+          <label htmlFor="agreement" className="text-[12.5px] text-gray-700 cursor-pointer select-none leading-relaxed">
+            <span className="font-semibold text-gray-900 block">
+              I am authorized to create this entity
+            </span>
+            I agree to the{" "}
+            <a
+              href="https://thrico.com/terms"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#005bd3] hover:underline font-medium"
+            >
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://thrico.com/privacy-policy"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#005bd3] hover:underline font-medium"
+            >
+              Privacy Policy <ExternalLink className="h-3 w-3 inline text-gray-400" />
+            </a>
+            .
+          </label>
+        </div>
+        {touched.agreement && errors.agreement && (
+          <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.agreement as string}</p>
+        )}
+      </div>
     </Form>
   );
 };
@@ -343,12 +250,6 @@ const RegisterEntityDomain: React.FC<RegisterEntityDomainProps> = ({
   domain: initialDomain,
   setDomain,
   onSubmit,
-  loading: submitLoading,
-  logo,
-  setLogo,
-  logoPreview,
-  setLogoPreview,
-  setCurrent,
 }) => {
   const initialValues = useMemo(
     () => ({ domain: initialDomain || "", agreement: false }),

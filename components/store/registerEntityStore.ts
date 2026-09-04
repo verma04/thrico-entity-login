@@ -51,7 +51,7 @@ interface RegisterEntityFormStore {
 
 export const useRegisterEntityFormStore = create<RegisterEntityFormStore>(
   (set) => ({
-    current: 0,
+    current: 1,
     setCurrent: (current) => set({ current }),
     profile: {
       designation: "",

@@ -3,8 +3,6 @@
 import React, { useMemo } from "react";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
-import { Globe } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -73,7 +71,7 @@ const RegisterEntityPreferences: React.FC<RegisterEntityPreferencesProps> = ({
   };
 
   const sortedCountries = useMemo(
-    () => countries?.sort((a, b) => a.name.localeCompare(b.name)) || [],
+    () => [...(countries || [])].sort((a, b) => a.name.localeCompare(b.name)),
     [countries]
   );
 
@@ -86,106 +84,47 @@ const RegisterEntityPreferences: React.FC<RegisterEntityPreferencesProps> = ({
       validateOnMount
     >
       {({ values, errors, touched, setFieldValue }) => (
-        <Form className="w-full">
+        <Form className="w-full space-y-4">
           <FormikStepSync step={2} />
 
-          <div className="rs-header">
-            <h2 className="rs-title">Regional settings</h2>
+          {/* Country Field */}
+          <div className="space-y-1.5">
+            <label className="text-[12.5px] font-medium text-gray-700 block">
+              Country <span className="text-red-500">*</span>
+            </label>
+            <Select
+              onValueChange={(val) => setFieldValue("country", val)}
+              defaultValue={values.country}
+            >
+              <SelectTrigger
+                className={cn(
+                  "w-full h-10 px-3.5 rounded-md border text-[13.5px] text-gray-900 bg-white transition-all outline-none border-gray-300 focus:border-black focus:ring-1 focus:ring-black",
+                  !values.country && "text-gray-400",
+                  touched.country && errors.country && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
+              >
+                <SelectValue placeholder="Select your country" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[260px] rounded-lg border border-gray-200">
+                {sortedCountries.map((country: CountryData) => (
+                  <SelectItem key={country.code} value={country.code} className="text-[13.5px] py-2 cursor-pointer">
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {touched.country && errors.country && (
+              <p className="text-[11.5px] font-medium text-red-600 mt-1">{errors.country as string}</p>
+            )}
           </div>
 
-          <div className="rs-fields">
-            <div className="rs-field">
-              <Label className="rs-label">
-                Country <span className="rs-required">*</span>
-              </Label>
-              <div className="rs-input-wrap">
-                <Select
-                  onValueChange={(val) => setFieldValue("country", val)}
-                  defaultValue={values.country}
-                >
-                  <SelectTrigger
-                    className={cn(
-                      "rs-select-trigger",
-                      !values.country && "rs-placeholder",
-                      touched.country && errors.country && "rs-input--error"
-                    )}
-                  >
-                    <SelectValue placeholder="Select your country" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-[280px]">
-                    {sortedCountries.map((country: CountryData) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Globe className="rs-icon" />
-              </div>
-              {touched.country && errors.country && (
-                <p className="rs-error">{errors.country as string}</p>
-              )}
-            </div>
-
-            <div className="rs-field">
-              <Label className="rs-label">
-                Language <span className="rs-required">*</span>
-              </Label>
-              <Language isFormik initialValue={initialValues.language} />
-            </div>
+          {/* Language Field */}
+          <div className="space-y-1.5">
+            <label className="text-[12.5px] font-medium text-gray-700 block">
+              Language <span className="text-red-500">*</span>
+            </label>
+            <Language isFormik initialValue={initialValues.language} />
           </div>
-
-          <style>{`
-            .rs-header { margin-bottom: 28px; }
-            .rs-title {
-              font-size: 20px;
-              font-weight: 800;
-              color: #0f172a;
-              letter-spacing: -0.4px;
-              margin: 0 0 6px;
-            }
-            .rs-sub { font-size: 14px; color: #64748b; margin: 0; }
-            .rs-fields { display: flex; flex-direction: column; gap: 20px; }
-            .rs-field { display: flex; flex-direction: column; gap: 6px; }
-            .rs-label {
-              font-size: 12px !important;
-              font-weight: 700 !important;
-              letter-spacing: 0.4px !important;
-              text-transform: uppercase !important;
-              color: #475569 !important;
-            }
-            .rs-required { color: #ef4444; }
-            .rs-input-wrap { position: relative; }
-            .rs-select-trigger {
-              height: 42px !important;
-              padding-left: 38px !important;
-              border-radius: 10px !important;
-              border: 1px solid #e2e8f0 !important;
-              background: #fff !important;
-              font-size: 14px !important;
-              font-weight: 500 !important;
-              color: #0f172a !important;
-              font-family: inherit !important;
-            }
-            .rs-select-trigger:focus {
-              border-color: #6366f1 !important;
-              box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
-            }
-            .rs-placeholder { color: #94a3b8 !important; }
-            .rs-input--error { border-color: #ef4444 !important; }
-            .rs-icon {
-              position: absolute;
-              left: 12px;
-              top: 50%;
-              transform: translateY(-50%);
-              height: 15px;
-              width: 15px;
-              color: #94a3b8;
-              pointer-events: none;
-              z-index: 1;
-            }
-            .rs-error { font-size: 12px; color: #ef4444; margin: 0; font-weight: 500; }
-          `}</style>
         </Form>
       )}
     </Formik>
