@@ -1,11 +1,16 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useLoginAsAdmin } from "../../graphql/actions";
+import { useTokenStore } from "../../store/store";
+import {
+  getAuthRedirectParams,
+  buildRedirectQueryString,
+} from "@/lib/auth-redirect";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -21,6 +26,17 @@ const validationSchema = Yup.object({
 
 const LoginForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
+  const token = useTokenStore((state) => state.token);
+
+  // If already authenticated, redirect to /my-accounts with host & path
+  React.useEffect(() => {
+    if (token) {
+      const queryString = buildRedirectQueryString(host, path);
+      router.replace(`/my-accounts${queryString}`);
+    }
+  }, [token, router, host, path]);
 
   const [login, { data, loading }] = useLoginAsAdmin({
     onCompleted() {
@@ -45,11 +61,14 @@ const LoginForm = () => {
 
   React.useEffect(() => {
     if (data?.sendAdminLoginOtp) {
-      router.push(
-        `/otp/${data?.sendAdminLoginOtp?.id}?email=${data?.sendAdminLoginOtp?.email || ""}`
-      );
+      const queryString = buildRedirectQueryString(host, path, {
+        email: data?.sendAdminLoginOtp?.email || "",
+      });
+      router.push(`/otp/${data?.sendAdminLoginOtp?.id}${queryString}`);
     }
-  }, [data, router]);
+  }, [data, router, host, path]);
+
+  const signUpQueryString = buildRedirectQueryString(host, path);
 
   return (
     <div className="w-full">
@@ -113,7 +132,7 @@ const LoginForm = () => {
         <p className="text-[12.5px] text-gray-700">
           New to Thrico?{" "}
           <Link
-            href="/sign-up"
+            href={`/sign-up${signUpQueryString}`}
             className="text-[#005bd3] hover:underline font-medium inline-flex items-center gap-0.5"
           >
             Get started <span aria-hidden="true">→</span>

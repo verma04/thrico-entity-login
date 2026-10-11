@@ -18,7 +18,13 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { withAuth, WithAuthProps } from "../hoc/with-auth";
+import {
+  getAuthRedirectParams,
+  buildAuthCallbackUrl,
+  buildRedirectQueryString,
+} from "@/lib/auth-redirect";
 
 interface Account {
   id: string;
@@ -35,12 +41,16 @@ const MyAccounts = ({ user }: WithAuthProps) => {
   const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL || "https://cdn.thrico.network";
   const token = useTokenStore((state) => state.token);
   const removeToken = useTokenStore((state) => state.removeToken);
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
+
+  const loginRedirectUrl = `/login${buildRedirectQueryString(host, path)}`;
 
   const [loginByEntityId] = useLoginByEntityId({
     onCompleted(data: any) {
       const newToken = data?.loginByEntityId?.token;
       if (newToken) {
-        window.location.href = `${DASHBOARD_URL}/auth/callback?code=${newToken}`;
+        window.location.href = buildAuthCallbackUrl(newToken, host, path);
       }
     },
     onError(error: any) {
@@ -57,15 +67,15 @@ const MyAccounts = ({ user }: WithAuthProps) => {
       console.error("Failed to fetch accounts:", error);
       toast.error("Session expired. Please login again.");
       removeToken();
-      window.location.href = "/login";
+      window.location.href = loginRedirectUrl;
     },
   });
 
   React.useEffect(() => {
     if (error) {
-      window.location.href = "/login";
+      window.location.href = loginRedirectUrl;
     }
-  }, [error]);
+  }, [error, loginRedirectUrl]);
 
   React.useEffect(() => {
     if (token) {
@@ -77,16 +87,16 @@ const MyAccounts = ({ user }: WithAuthProps) => {
         },
       });
     } else {
-      window.location.href = "/login";
+      window.location.href = loginRedirectUrl;
     }
-  }, [token, fetchMyAccounts]);
+  }, [token, fetchMyAccounts, loginRedirectUrl]);
 
   React.useEffect(() => {
     if (error) {
       removeToken();
-      window.location.href = "/login";
+      window.location.href = loginRedirectUrl;
     }
-  }, [error, removeToken]);
+  }, [error, removeToken, loginRedirectUrl]);
 
   const accounts: Account[] = data?.getMyAccounts || [];
 
@@ -104,7 +114,7 @@ const MyAccounts = ({ user }: WithAuthProps) => {
 
   const handleLogout = () => {
     removeToken();
-    window.location.href = "/login";
+    window.location.href = loginRedirectUrl;
   };
 
   const getInitials = (name: string) => {
@@ -264,7 +274,7 @@ const MyAccounts = ({ user }: WithAuthProps) => {
           {!loading && (
             <div className="pt-2.5">
               <Link
-                href="/register-entity"
+                href={`/register-entity${buildRedirectQueryString(host, path)}`}
                 className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-gray-300 hover:border-gray-900 bg-gray-50/40 hover:bg-gray-50 transition-all duration-150 cursor-pointer group"
               >
                 <div className="h-5 w-5 rounded-full bg-white border border-gray-200 flex items-center justify-center group-hover:border-gray-900 transition-colors">

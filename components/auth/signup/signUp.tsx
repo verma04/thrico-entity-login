@@ -3,9 +3,15 @@
 import React from "react";
 import AuthLayout from "../layout/auth-layout";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import SignupForm from "./form";
+import { getAuthRedirectParams, buildRedirectQueryString } from "@/lib/auth-redirect";
 
 const SignUp = () => {
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
+  const loginQueryString = buildRedirectQueryString(host, path);
+
   return (
     <AuthLayout>
       <div className="w-full">
@@ -27,7 +33,7 @@ const SignUp = () => {
           <p className="text-[12.5px] text-gray-700">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href={`/login${loginQueryString}`}
               className="text-[#005bd3] hover:underline font-medium inline-flex items-center gap-0.5"
             >
               Sign in <span aria-hidden="true">→</span>

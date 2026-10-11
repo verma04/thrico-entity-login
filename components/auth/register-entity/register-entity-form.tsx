@@ -19,6 +19,8 @@ import {
 
 import { useRegisterEntityFormStore } from "@/components/store/registerEntityStore";
 import { withAuth, WithAuthProps } from "../hoc/with-auth";
+import { useSearchParams } from "next/navigation";
+import { getAuthRedirectParams, buildAuthCallbackUrl } from "@/lib/auth-redirect";
 
 const stepMeta = [
   { id: 1, title: "Profile details", description: "Your contact and role information" },
@@ -30,9 +32,8 @@ const stepMeta = [
 ];
 
 const RegisterEntityForm = ({ user }: WithAuthProps) => {
-  const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL
-    ? process.env.NEXT_PUBLIC_DASHBOARD_URL
-    : "https://dashboard.thrico.com/";
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
 
   const {
     current,
@@ -53,7 +54,9 @@ const RegisterEntityForm = ({ user }: WithAuthProps) => {
     onCompleted(data: any) {
       const token = data?.registerEntity?.token;
       if (token) {
-        window.location.href = `${DASHBOARD_URL}/auth/callback?code=${token}&choose-plan`;
+        window.location.href = buildAuthCallbackUrl(token, host, path, {
+          "choose-plan": "",
+        });
         toast.success("Entity registered successfully!");
       }
     },

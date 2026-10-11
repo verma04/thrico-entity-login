@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useRegisterAsAdmin } from "../../graphql/actions";
+import { getAuthRedirectParams, buildRedirectQueryString } from "@/lib/auth-redirect";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -24,13 +25,15 @@ const validationSchema = Yup.object({
 
 const SignupForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
 
   const [register, { loading }] = useRegisterAsAdmin({
     onCompleted() {
       toast.success(
         "User successfully registered. Please proceed to login to continue."
       );
-      router.push("/login");
+      router.push(`/login${buildRedirectQueryString(host, path)}`);
     },
     onError(err) {
       toast.error(err.message || "Failed to create account. Please try again.");

@@ -2,9 +2,10 @@
 
 import React from "react";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useRegisterEntityFormStore } from "@/components/store/registerEntityStore";
+import { getAuthRedirectParams, buildRedirectQueryString } from "@/lib/auth-redirect";
 
 interface RegisterEntityFooterProps {
   onSubmit?: () => void | Promise<void>;
@@ -22,6 +23,9 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
   className,
 }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
+
   const {
     current,
     setCurrent,
@@ -33,7 +37,7 @@ const RegisterEntityFooter: React.FC<RegisterEntityFooterProps> = ({
     if (current > 1) {
       setCurrent(current - 1);
     } else {
-      router.push("/my-accounts");
+      router.push(`/my-accounts${buildRedirectQueryString(host, path)}`);
     }
   };
 

@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGetLoginUserDetails } from "@/components/graphql/actions";
+import { getAuthRedirectParams, buildRedirectQueryString } from "@/lib/auth-redirect";
 import { Loader2, ShieldCheck } from "lucide-react";
 
 export interface WithAuthProps {
@@ -20,6 +21,7 @@ export function withAuth<T extends WithAuthProps>(
 ) {
   return function AuthenticatedComponent(props: Omit<T, keyof WithAuthProps>) {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { data, loading, error } = useGetLoginUserDetails({
       fetchPolicy: "network-only",
     });
@@ -27,10 +29,11 @@ export function withAuth<T extends WithAuthProps>(
     useEffect(() => {
       if (!loading) {
         if (error || !data || !data.getLoginUserDetails) {
-          router.push("/login");
+          const { host, path } = getAuthRedirectParams(searchParams);
+          router.push(`/login${buildRedirectQueryString(host, path)}`);
         }
       }
-    }, [loading, data, error, router]);
+    }, [loading, data, error, router, searchParams]);
 
     if (loading) {
       return (

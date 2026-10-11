@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useOtpLogin } from "../../graphql/actions";
@@ -12,6 +12,10 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useTokenStore } from "../../store/store";
+import {
+  getAuthRedirectParams,
+  buildRedirectQueryString,
+} from "@/lib/auth-redirect";
 import { Loader2 } from "lucide-react";
 
 const validationSchema = Yup.object({
@@ -24,6 +28,8 @@ const OtpForm = () => {
   const storeToken = useTokenStore((state) => state.storeToken);
   const { id } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { host, path } = getAuthRedirectParams(searchParams);
 
   const [login, { loading }] = useOtpLogin({
     async onCompleted(data: any) {
@@ -31,7 +37,8 @@ const OtpForm = () => {
       if (token) {
         await storeToken(token);
         toast.success("Login Successful");
-        router.push("/my-accounts");
+        const queryString = buildRedirectQueryString(host, path);
+        router.push(`/my-accounts${queryString}`);
       }
     },
     onError(err) {

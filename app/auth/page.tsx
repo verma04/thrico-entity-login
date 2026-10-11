@@ -1,30 +1,38 @@
 "use client";
 
-import React from "react";
-
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-
+import React, { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTokenStore } from "@/components/store/store";
-import { useCheckUser } from "@/components/graphql/actions";
-const Auth = () => {
-  const searchParams = useSearchParams();
-  const { token } = useTokenStore((state) => ({
-    isAuthenticated: state.isAuthenticated,
-    token: state.token,
-  }));
-  const path = searchParams.get("path");
-  const host = searchParams.get("host");
+import {
+  getAuthRedirectParams,
+  buildRedirectQueryString,
+} from "@/lib/auth-redirect";
 
-  React.useEffect(() => {
-    if (token !== null) {
-      window.location.href = `/login/?path=${path}&&host=${host}`;
+const AuthContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = useTokenStore((state) => state.token);
+
+  useEffect(() => {
+    const { host, path } = getAuthRedirectParams(searchParams);
+    const queryString = buildRedirectQueryString(host, path);
+
+    if (token) {
+      router.replace(`/my-accounts${queryString}`);
     } else {
-      window.location.href = `/login/?path=${path}&&host=${host}`;
+      router.replace(`/login${queryString}`);
     }
-  }, [token, path]);
+  }, [token, searchParams, router]);
 
   return null;
+};
+
+const Auth = () => {
+  return (
+    <Suspense fallback={null}>
+      <AuthContent />
+    </Suspense>
+  );
 };
 
 export default Auth;
