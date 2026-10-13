@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGetLoginUserDetails } from "@/components/graphql/actions";
+import { useTokenStore } from "@/components/store/store";
 import { getAuthRedirectParams, buildRedirectQueryString } from "@/lib/auth-redirect";
 import { Loader2, ShieldCheck } from "lucide-react";
 
@@ -22,20 +23,32 @@ export function withAuth<T extends WithAuthProps>(
   return function AuthenticatedComponent(props: Omit<T, keyof WithAuthProps>) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const token = useTokenStore((state) => state.token);
+    const removeToken = useTokenStore((state) => state.removeToken);
+
     const { data, loading, error } = useGetLoginUserDetails({
+      skip: !token,
       fetchPolicy: "network-only",
     });
 
     useEffect(() => {
+      const { host, path } = getAuthRedirectParams(searchParams);
+      const redirectUrl = `/login${buildRedirectQueryString(host, path)}`;
+
+      if (!token) {
+        router.replace(redirectUrl);
+        return;
+      }
+
       if (!loading) {
         if (error || !data || !data.getLoginUserDetails) {
-          const { host, path } = getAuthRedirectParams(searchParams);
-          router.push(`/login${buildRedirectQueryString(host, path)}`);
+          removeToken();
+          router.replace(redirectUrl);
         }
       }
-    }, [loading, data, error, router, searchParams]);
+    }, [token, loading, data, error, router, searchParams, removeToken]);
 
-    if (loading) {
+    if (!token || loading) {
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 relative z-10 w-full animate-in fade-in duration-700">
           {/* Background Glow */}

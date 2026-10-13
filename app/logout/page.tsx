@@ -17,13 +17,21 @@ const Page = () => {
       toast.success("Logout Success", {
         id: "12",
       });
-      removeToken();
+    },
+    onError() {
+      // Even if network or token fails, local session is already cleared
     },
   });
+
   useEffect(() => {
-    logout();
-    router.push("/login");
-  }, [logout, router]);
+    removeToken();
+    try {
+      logout().catch(() => {});
+    } catch {
+      // ignore
+    }
+    router.replace("/login");
+  }, [logout, removeToken, router]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen">

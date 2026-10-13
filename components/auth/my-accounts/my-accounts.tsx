@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { withAuth, WithAuthProps } from "../hoc/with-auth";
 import {
   getAuthRedirectParams,
@@ -35,6 +35,7 @@ interface Account {
 }
 
 const MyAccounts = ({ user }: WithAuthProps) => {
+  const router = useRouter();
   const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL
     ? process.env.NEXT_PUBLIC_DASHBOARD_URL
     : "https://dashboard.thrico.com/";
@@ -67,15 +68,16 @@ const MyAccounts = ({ user }: WithAuthProps) => {
       console.error("Failed to fetch accounts:", error);
       toast.error("Session expired. Please login again.");
       removeToken();
-      window.location.href = loginRedirectUrl;
+      router.replace(loginRedirectUrl);
     },
   });
 
   React.useEffect(() => {
     if (error) {
-      window.location.href = loginRedirectUrl;
+      removeToken();
+      router.replace(loginRedirectUrl);
     }
-  }, [error, loginRedirectUrl]);
+  }, [error, removeToken, loginRedirectUrl, router]);
 
   React.useEffect(() => {
     if (token) {
@@ -87,16 +89,10 @@ const MyAccounts = ({ user }: WithAuthProps) => {
         },
       });
     } else {
-      window.location.href = loginRedirectUrl;
-    }
-  }, [token, fetchMyAccounts, loginRedirectUrl]);
-
-  React.useEffect(() => {
-    if (error) {
       removeToken();
-      window.location.href = loginRedirectUrl;
+      router.replace(loginRedirectUrl);
     }
-  }, [error, removeToken, loginRedirectUrl]);
+  }, [token, fetchMyAccounts, loginRedirectUrl, removeToken, router]);
 
   const accounts: Account[] = data?.getMyAccounts || [];
 
@@ -114,7 +110,7 @@ const MyAccounts = ({ user }: WithAuthProps) => {
 
   const handleLogout = () => {
     removeToken();
-    window.location.href = loginRedirectUrl;
+    router.replace(loginRedirectUrl);
   };
 
   const getInitials = (name: string) => {
